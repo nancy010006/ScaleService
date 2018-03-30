@@ -18,3 +18,4 @@ Route::get('/', function () {
 Route::get('/Scale', 'ScaleController@index');
 Route::post('/Scale', 'ScaleController@insert');
 Route::put('/Scale', 'ScaleController@update');
+Route::delete('/Scale', 'ScaleController@delete');

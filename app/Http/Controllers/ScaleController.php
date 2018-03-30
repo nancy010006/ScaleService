@@ -10,40 +10,41 @@ class ScaleController extends Controller
 {
     public function index(){
 
-    	// dd($scale); 
-    	return view('scale.index',[]);
+    	$scales=Scale::all(); 
+    	return view('scale.index',['scales' => $scales]);
     }
     public function insert(Request $request){
-    	//新增方法1
-    	// $Scale = new Scale();
-    	// $Scale->title = $request->title;
-    	// $Scale->save();
-
-    	//新增方法2
-    	// return Scale::create([
-     //        'title' => $request['title']
-     //    ]);
-
-    	//新增方法3
         try {
             $Scale = Scale::create($request->all());
 
         } catch (\Illuminate\Database\QueryException $e) {
-            dd($e);
-            // return $e->getCode();
-            // return parent::render($request, $e);
-            // return \Response::json(['status' => 'error', 'msg' => '量表名稱重複']);
+            // dd($e);
+            $error = $e->getCode();
+            switch ($error) {
+                case '23000':
+                    return \Response::json(['status' => 'error', 'msg' => '量表名稱重複']);
+                    break;
+                default:
+                    return \Response::json(['status' => 'error', 'msg' => '發生未預期錯誤，請聯絡管理人員','statuscode' => $error]);
+                    break;
+            }
         }
-    	return \Response::json(['status' => 'ok', 'msg' => '新增成功','data' =>$request->all()]);
+    	return \Response::json(['status' => 'ok', 'msg' => '新增成功']);
     }
     public function update(Request $request){
         // $todo = Todo::find($request->id);
-        $scale = Scale::where('name', $request->name)->update(
-            ['dimension'=>$request->dimension,
-            'level'=>$request->level]
-            );
-        $scale = Scale::where('level', $request->level)->get();
+        $input = $request->all();
+        $scale = Scale::find($request->id)->update($input);
+        // $scale = Scale::find($request->id);
+        // $scale = Scale::where('name', $request->name)->update(
+        //     ['dimension'=>$request->dimension,
+        //     'level'=>$request->level]
+        //     );
+        // $scale = Scale::where('level', $request->level)->get();
         return response()->json($scale);
-
+    }
+    public function delete(Request $request){
+        $scale = Scale::find($request->id)->delete();
+        return response()->json($scale);
     }
 }
