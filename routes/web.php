@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/Scale', 'ScaleController@index');
+Route::post('/Scale', 'ScaleController@insert');
+Route::put('/Scale', 'ScaleController@update');
