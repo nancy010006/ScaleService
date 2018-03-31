@@ -27,3 +27,9 @@ Route::get('/Question/data', 'QuestionController@getData');
 Route::post('/Question', 'QuestionController@insert');
 Route::put('/Question', 'QuestionController@update');
 Route::delete('/Question', 'QuestionController@delete');
+
+//回應
+Route::get('/Response/data', 'ResponseController@getData');
+Route::post('/Response', 'ResponseController@insert');
+Route::put('/Response', 'ResponseController@update');
+Route::delete('/Response', 'ResponseController@delete');

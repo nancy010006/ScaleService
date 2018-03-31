@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Scale extends Model
+class Response extends Model
 {
     protected $fillable = [
-        'name','level','author'
+        'response','scaleid','userid'
     ];
 }

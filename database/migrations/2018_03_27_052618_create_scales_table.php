@@ -16,7 +16,6 @@ class CreateScalesTable extends Migration
         Schema::create('scales', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->string('dimension');
             $table->string('level');
             $table->timestamps();
         });

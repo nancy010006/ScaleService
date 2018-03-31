@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Scale;
+use App\Dimension;
 
 class ScaleController extends Controller
 {
@@ -20,7 +21,10 @@ class ScaleController extends Controller
     public function insert(Request $request){
         try {
             $Scale = Scale::create($request->all());
-
+            $arr = explode(',',$request->dimension);
+            foreach ($arr as $key => $value) {
+                $Dimension = Dimension::create(array('name' => $value,'scaleid' => $Scale->id));
+            }
         } catch (\Illuminate\Database\QueryException $e) {
             // dd($e);
             $error = $e->getCode();
