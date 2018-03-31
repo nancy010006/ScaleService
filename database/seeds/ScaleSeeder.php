@@ -11,6 +11,7 @@ class ScaleSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Scale::class, 50)->create();
+        factory(App\Scale::class, 5)->create();
+        factory(App\Question::class, 100)->create();
     }
 }
