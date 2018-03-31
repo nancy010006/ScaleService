@@ -25,22 +25,3 @@ $factory->define(App\Dimension::class, function (Faker $faker) {
         'scaleid' =>rand(1,5)
     ];
 });
-$factory->define(App\Response::class, function (Faker $faker) {
-    $useridarr = DB::table('users')->pluck('id')->toarray();
-    $scaleidarr = DB::table('scales')->pluck('id')->toarray();
-    $userid = $faker->randomElement($useridarr);
-    $scaleid = $faker->randomElement($scaleidarr);
-    $level = DB::table('scales')->where('id',$scaleid)->get();
-    $level = $level[0]->level;
-    $count = DB::table('questions')->where('scaleid',$scaleid)->count();
-    $response ="";
-    for ($i=0; $i < $count ; $i++) { 
-        $response.=rand(1,$level).",";
-    }
-    $response = substr($response, 0,-1);
-    return [
-        'response' =>$response,
-        'scaleid' =>$scaleid,
-        'userid' =>$userid
-    ];
-});
