@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-class ScaleSeeder extends Seeder
+class ResponseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -11,9 +11,6 @@ class ScaleSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Scale::class, 5)->create();
-        factory(App\Dimension::class, 25)->create();
-        factory(App\Question::class, 100)->create();
         factory(App\Response::class, 100)->create();
     }
 }

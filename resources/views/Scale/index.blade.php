@@ -7,7 +7,6 @@
 	<title></title>
 </head>
 <body>
-
 	    <form action="" method="POST">
 			<input type="submit" value="Delete">
 		</form>
@@ -32,6 +31,8 @@
 		<input type="text" name="author" placeholder="作者">
 		<input type="submit">
 	</form>
+
+	<div id="data"></div>
 	
 </body>
 </html>

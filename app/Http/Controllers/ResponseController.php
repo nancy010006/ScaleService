@@ -9,8 +9,11 @@ use App\Response;
 class ResponseController extends Controller
 {
     public function getData(Request $request){
-        $Responses=DB::table('Responses')->where('scaleid', '=', $request->scaleid)->get();; 
+        $Responses = Response::all();
         return $Responses;
+    }
+    public function getOneData(Request $request,Response $Response){
+        return $Response;
     }
     public function insert(Request $request){
         try {
@@ -27,13 +30,13 @@ class ResponseController extends Controller
         }
     	return \Response::json(['status' => 'ok', 'msg' => '新增成功']);
     }
-    public function update(Request $request){
+    public function update(Request $request,Response $Response){
         $input = $request->all();
-        $Response = Response::find($request->id)->update($input);
+        $Response->update($input);
     	return \Response::json(['status' => 'ok', 'msg' => '修改成功']);
     }
-    public function delete(Request $request){
-        $Response = Response::find($request->id)->delete();
+    public function delete(Request $request,Response $Response){
+        $Response->delete();
     	return \Response::json(['status' => 'ok', 'msg' => '刪除成功']);
     }
 }
