@@ -15,12 +15,43 @@ class ScaleController extends Controller
     	return view('scale.index');
     }
     public function getData(){
-        $scales=Scale::all(); 
+        $scales=Scale::all()->toarray();
+        // $Question=Question::all()->groupBy('scaleid');
+        $Question = DB::table('scales')
+            ->leftjoin('questions','scales.id','=','questions.scaleid')
+            ->select('scales.id', DB::raw('count(scaleid) as total'))
+            ->groupBy('scales.id')
+            ->get();
+        foreach ($Question as $key => $value) {
+            $scales[$key]["questions"]=$value->total;           
+        }
         return $scales;
     }
     public function getOneData(Scale $scale){
-        $Question=Question::where('scaleid',$scale->id)->get();
-        $result=["scale"=>$scale,"Question"=>$Question];
+        // DB::connection()->enableQueryLog();
+        // $Question=Question::where('scaleid',$scale->id)->get()->toarray();
+        $dimension=Dimension::where('scaleid',$scale->id)->get()->toarray();
+        $questions = DB::table('Dimensions')
+            ->leftjoin('questions','Dimensions.name','=','questions.dimension','and','Dimensions.scaleid','=','questions.scaleid')
+            ->select('Dimensions.name as Dname',DB::raw('questions.description as description'))
+            ->where('Dimensions.scaleid',$scale->id)
+            ->where('questions.scaleid',$scale->id)
+            // ->groupBy('scales.id')
+            ->get()
+            ->toarray();
+        foreach ($dimension as $key => $value) {
+            $dimensionD = $value["name"];
+            $dimension[$key]["questions"]=array();
+            foreach ($questions as $qkey => $qvalue) {
+                if($qvalue->Dname==$dimensionD){
+                    array_push($dimension[$key]["questions"], $qvalue->description);
+                }
+            }
+        }
+        $result=["scale"=>$scale,"Dimension"=>$dimension];
+
+        
+            // dd(DB::getQueryLog());
         return $result;
     }
     public function insert(Request $request){

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Scale;
 
 class AdminController extends Controller
 {
@@ -19,6 +20,9 @@ class AdminController extends Controller
         return view('admin.scale');
     }
     public function scaleadd(){
-        return view('admin.scaleadd');
+        return view('admin.scaleAdd');
+    }
+    public function scaleEdit(Scale $scale){
+        return view('admin.scaleEdit',["scale"=>$scale]);
     }
 }

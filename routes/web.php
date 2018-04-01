@@ -40,5 +40,6 @@ Route::delete('/Response/{Response}', 'ResponseController@delete');
 Route::get('/admin', 'AdminController@index');
 Route::get('/admin/tables', 'AdminController@tables');
 Route::get('/admin/scale', 'AdminController@scale');
-Route::get('/admin/scale/add', 'AdminController@scaleadd');
+Route::get('/admin/scale/add', 'AdminController@scaleAdd');
+Route::get('/admin/scale/edit/{scale}', 'AdminController@scaleEdit');
 Route::get('/admin/default', 'AdminController@default');
