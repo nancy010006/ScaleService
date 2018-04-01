@@ -12,11 +12,10 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('admin.index');
 });
 
 // 量表
-Route::get('/Scale', 'ScaleController@index');
 Route::get('/Scales', 'ScaleController@getData');
 Route::get('/Scale/{scale}', 'ScaleController@getOneData');
 Route::post('/Scale', 'ScaleController@insert');
@@ -36,3 +35,10 @@ Route::get('/Response/{Response}', 'ResponseController@getOneData');
 Route::post('/Response', 'ResponseController@insert');
 Route::put('/Response/{Response}', 'ResponseController@update');
 Route::delete('/Response/{Response}', 'ResponseController@delete');
+
+//管理員頁面
+Route::get('/admin', 'AdminController@index');
+Route::get('/admin/tables', 'AdminController@tables');
+Route::get('/admin/scale', 'AdminController@scale');
+Route::get('/admin/scale/add', 'AdminController@scaleadd');
+Route::get('/admin/default', 'AdminController@default');
