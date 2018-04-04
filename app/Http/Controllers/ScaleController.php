@@ -33,7 +33,7 @@ class ScaleController extends Controller
         $dimension=Dimension::where('scaleid',$scale->id)->get()->toarray();
         $questions = DB::table('Dimensions')
             ->leftjoin('questions','Dimensions.name','=','questions.dimension','and','Dimensions.scaleid','=','questions.scaleid')
-            ->select('Dimensions.name as Dname',DB::raw('questions.description as description'))
+            ->select('questions.id as id','Dimensions.name as Dname',DB::raw('questions.description as description'))
             ->where('Dimensions.scaleid',$scale->id)
             ->where('questions.scaleid',$scale->id)
             // ->groupBy('scales.id')
@@ -42,9 +42,11 @@ class ScaleController extends Controller
         foreach ($dimension as $key => $value) {
             $dimensionD = $value["name"];
             $dimension[$key]["questions"]=array();
+            $dimension[$key]["questionsid"]=array();
             foreach ($questions as $qkey => $qvalue) {
                 if($qvalue->Dname==$dimensionD){
                     array_push($dimension[$key]["questions"], $qvalue->description);
+                    array_push($dimension[$key]["questionsid"], $qvalue->id);
                 }
             }
         }

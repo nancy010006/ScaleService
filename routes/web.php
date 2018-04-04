@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 // 量表
 Route::get('/Scales', 'ScaleController@getData');
+Route::get('/Scale', 'ScaleController@index');
 Route::get('/Scale/{scale}', 'ScaleController@getOneData');
 Route::post('/Scale', 'ScaleController@insert');
 Route::put('/Scale/{scale}', 'ScaleController@update');
@@ -26,7 +27,8 @@ Route::delete('/Scale/{scale}', 'ScaleController@delete');
 Route::get('/Questions', 'QuestionController@getData');
 Route::get('/Question/{Question}', 'QuestionController@getOneData');
 Route::post('/Question', 'QuestionController@insert');
-Route::put('/Question/{Question}', 'QuestionController@update');
+// Route::put('/Question/{Question}', 'QuestionController@update');
+Route::put('/Question/', 'QuestionController@update');
 Route::delete('/Question/{Question}', 'QuestionController@delete');
 
 //回應
