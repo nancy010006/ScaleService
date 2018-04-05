@@ -34,8 +34,8 @@ class ScaleController extends Controller
             $questions= Question::where(['scaleid'=>$scale->id,'dimension'=>$dimensionName])->get()->toarray();
             $dimensions[$key]["questions"]=$questions;
         }
-        $result=["scale"=>$scale,"Dimension"=>$dimensions];
-        return $result;
+        $scale["dimensions"] = $dimensions;
+        return $scale;
     }
     public function insert(Request $request){
         $input = $request->all();
@@ -69,8 +69,59 @@ class ScaleController extends Controller
     	return \Response::json(['status' => 'ok', 'msg' => '新增成功']);
     }
     public function update(Request $request,Scale $scale){
+        $scaleid = $scale->id;
         $input = $request->all();
-        $scale->update($input);
+        // print_r($input);
+        $newname = $input["newData"]["name"];
+        $oldname = Scale::find($scaleid)->name;
+        //更改名稱及等第
+        if($newname!=$oldname){
+            Scale::find($scaleid)->update(["name"=>$input["newData"]["name"],"level"=>$input["newData"]["level"]]);
+        }
+        else{
+            Scale::find($scaleid)->update(["level"=>$input["newData"]["level"]]);
+        }
+        //更改構面
+        $olddimensions = $input["oldData"]["oDimensionInput"];
+        $newdimensions = $input["newData"]["DimensionOInput"];
+        @$adddimensions = $input["newData"]["DimensionInput"];
+        $newdimensions = explode("*", $newdimensions);
+        // print_r($newdimensions);
+        foreach ($olddimensions as $key => $value) {
+            if($newdimensions[$key])
+                Dimension::find($value)->update(["name"=>$newdimensions[$key]]);
+            else{
+                unset($input["oldData"]["od".($key+1)]);
+                Dimension::find($value)->delete();
+            }
+        }
+        $olddimensionsL = count($olddimensions);
+        $newdimensionsL = count($newdimensions);
+        if(isset($adddimensions)){
+            $adddimensions = explode("*", $adddimensions);
+            foreach ($adddimensions as $key => $value) {
+                Dimension::create(["name"=>$value,"scaleid"=>$scaleid]);
+            }
+        }
+        //將多餘資料刪除
+        unset($input["oldData"]["oDimensionInput"]);
+        unset($input["newData"]["DimensionInput"]);
+        unset($input["newData"]["DimensionOInput"]);
+        unset($input["newData"]["name"]);
+        unset($input["newData"]["level"]);
+        //更改題目敘述
+        $oldquestions = $input["oldData"];
+        $newquestions = $input["newData"];
+        foreach ($newquestions as $key => $value) {
+            $newquestions[$key] = explode("*", $value);
+        }
+        foreach ($oldquestions as $key => $value) {
+            foreach ($value as $qkey => $qvalue) {
+                Question::find($qvalue)->update(["description"=>$newquestions[substr($key,1)][$qkey]]);
+            }
+        }
+
+        // print_r($input);
         return \Response::json(['status' => 'ok', 'msg' => '修改成功']);
     }
     public function delete(Request $request,Scale $scale){
