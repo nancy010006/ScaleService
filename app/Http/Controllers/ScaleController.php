@@ -28,40 +28,31 @@ class ScaleController extends Controller
         return $scales;
     }
     public function getOneData(Scale $scale){
-        // DB::connection()->enableQueryLog();
-        // $Question=Question::where('scaleid',$scale->id)->get()->toarray();
-        $dimension=Dimension::where('scaleid',$scale->id)->get()->toarray();
-        $questions = DB::table('Dimensions')
-            ->leftjoin('questions','Dimensions.name','=','questions.dimension','and','Dimensions.scaleid','=','questions.scaleid')
-            ->select('questions.id as id','Dimensions.name as Dname',DB::raw('questions.description as description'))
-            ->where('Dimensions.scaleid',$scale->id)
-            ->where('questions.scaleid',$scale->id)
-            // ->groupBy('scales.id')
-            ->get()
-            ->toarray();
-        foreach ($dimension as $key => $value) {
-            $dimensionD = $value["name"];
-            $dimension[$key]["questions"]=array();
-            $dimension[$key]["questionsid"]=array();
-            foreach ($questions as $qkey => $qvalue) {
-                if($qvalue->Dname==$dimensionD){
-                    array_push($dimension[$key]["questions"], $qvalue->description);
-                    array_push($dimension[$key]["questionsid"], $qvalue->id);
-                }
-            }
+        $dimensions=Dimension::where('scaleid',$scale->id)->get()->toarray();
+        foreach ($dimensions as $key => $value) {
+            $dimensionName = $value["name"];
+            $questions= Question::where(['scaleid'=>$scale->id,'dimension'=>$dimensionName])->get()->toarray();
+            $dimensions[$key]["questions"]=$questions;
         }
-        $result=["scale"=>$scale,"Dimension"=>$dimension];
-
-        
-            // dd(DB::getQueryLog());
+        $result=["scale"=>$scale,"Dimension"=>$dimensions];
         return $result;
     }
     public function insert(Request $request){
+        $input = $request->all();
         try {
-            $Scale = Scale::create($request->all());
-            $arr = explode(',',$request->dimension);
-            foreach ($arr as $key => $value) {
-                $Dimension = Dimension::create(array('name' => $value,'scaleid' => $Scale->id));
+            $scaleid = Scale::create(['name'=>$input["name"], 'level'=>$input["level"],'author'=>"假的"])->id;
+            // $scaleid=1;
+            @$dimensionsarr = explode("*",$input["DimensionInput"]);
+            $dimensions = array();
+            foreach ($dimensionsarr as $dkey => $dvalue) {
+                if(!empty($dvalue))
+                    Dimension::create(["name"=>$dvalue,"scaleid"=>$scaleid]);
+                @$questionsarr = explode("*", $input["d".($dkey+1)]);
+                $questions =array();
+                foreach ($questionsarr as $qkey => $qvalue) {
+                    if(!empty($qvalue))
+                        Question::create(["description"=>$qvalue,"scaleid"=>$scaleid,"dimension"=>$dvalue]);
+                }
             }
         } catch (\Illuminate\Database\QueryException $e) {
             // dd($e);
