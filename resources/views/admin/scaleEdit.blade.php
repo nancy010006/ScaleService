@@ -33,7 +33,7 @@
             var addQs = $('button[onclick*="addQ"]');
             $.each(addQs,function(index,value){
                 $.each(scale.dimensions[index].questions,function(dindex,dvalue){
-                    addQ(value,""+dvalue.description+"");
+                    addOQ(value,""+dvalue.description+"");
                 })
             })
         }
@@ -45,7 +45,20 @@
             // console.log($('input[name="_token"]').val());
             var data = objectifyForm($(this).serializeArray());
             // data.author="tmp";
-            console.log(data);
+            data.oldquestions={};
+            data.newquestions={};
+            $.each(data,function(index,val){
+                if(index.substr(0,1)=="O"){
+                    data.oldquestions[index]=val;
+                    delete data[index];
+                }else if(index.substr(0,1)=="d"){
+                    data.newquestions[index]=val;
+                    delete data[index];
+                }else{
+
+                }
+            })
+            console.error(data);
             request ={};
             request.newData = data;
             request._token = data._token;
@@ -60,7 +73,8 @@
                 success:function(r){
                     console.error(r.msg);
                     alert(r.msg);
-                    history.go(0);
+                    if(r.status=="ok")
+                        history.go(0);
                 }
             })
         })
@@ -87,7 +101,7 @@
                 $.each(value.questions,function(qindex,qvalue){
                     qarr.push(qvalue.id)
                 })
-                result["od"+(index+1)]=qarr;
+                result["Od"+(index+1)]=qarr;
             })
             result.oDimensionInput = oDimensionInput;
             // console.log(result);
@@ -159,22 +173,41 @@
             })
         }
         function addQ(self,val){
-            console.log();
+            if(!val)
+                val="";
+            var whichD = $(self).prev().attr('id').slice(13);
+            var divBody = $(self).parent().parent().children()[1];
+            var count  = $(divBody).children("input[type!='hidden']").length+1;
+            var DelQButton = '<button style="float:right;" onclick="delQ(this)" type="button" class="btn btn-warning btn-circle"><i class="fa fa-times"></i></button>';
+            var question = '<label >'+count+'.</label>'+DelQButton+'<input name="d'+whichD+'" class="form-control" value="'+val+'" required="">';
+            $(divBody).append(question);
+
+        }
+        function addOQ(self,val){
             if(!val)
                 val="";
             var whichD = $(self).prev().attr('id').slice(13);
             var divBody = $(self).parent().parent().children()[1];
             var count  = $(divBody).children("input").length+1;
             var DelQButton = '<button style="float:right;" onclick="delQ(this)" type="button" class="btn btn-warning btn-circle"><i class="fa fa-times"></i></button>';
-            var question = '<label >'+count+'.</label>'+DelQButton+'<input name="d'+whichD+'" class="form-control" value="'+val+'" required="">';
+            var question = '<label >'+count+'.</label>'+DelQButton+'<input name="Od'+whichD+'" class="form-control" value="'+val+'" required="">';
             $(divBody).append(question);
 
         }
         function delQ(self){
             var divBody = $(self).parent().parent().children()[1];
-            $(self).prev().remove();
-            $(self).next().remove();
-            $(self).remove();
+            var label = $(self).prev(); 
+            var input = $(self).next(); 
+            var name = input.attr("name").slice(0,1);
+            if(name!="O"){
+                input.remove();
+                
+            }else{
+                input.val("0");
+                input.attr("type","hidden");
+            }
+            label.remove();
+            self.remove(); 
             var labels = $(divBody).children("label");
             $.each(labels,function(index,value){
                 $(value).text((index+1)+".");

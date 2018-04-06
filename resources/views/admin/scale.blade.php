@@ -42,7 +42,6 @@
                     url:'../Scale/'+id,
                     data:{"_token":"{{ csrf_token() }}"},
                     success:function(r){
-                        alert(r.msg);
                         window.location.href="scale";
                     }
                 })

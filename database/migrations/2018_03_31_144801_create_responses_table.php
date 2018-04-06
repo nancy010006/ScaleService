@@ -19,8 +19,8 @@ class CreateResponsesTable extends Migration
             $table->string("response");
             $table->unsignedInteger("userid");
             $table->foreign('userid')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger("scaleid");
-            $table->foreign('scaleid')->references('id')->on('scales')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedInteger("qid");
+            $table->foreign('qid')->references('id')->on('questions')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

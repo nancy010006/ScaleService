@@ -31,10 +31,11 @@
                 data:data,
                 success:function(r){
                     alert(r.msg);
-                    window.location.href="../scale";
+                    if(r.status=="ok")
+                        window.location.href="../scale";
                 }
             })
-        })
+        })  
         function addD(){
             var newcount = $("#AllDimensionAreas input").length+1;
             var AddQButton = '<button onclick="addQ(this)" type="button" class="btn btn-success btn-circle"><i class="fa fa-plus"></i></button>';

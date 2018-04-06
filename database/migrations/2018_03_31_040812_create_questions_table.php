@@ -17,10 +17,8 @@ class CreateQuestionsTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->string('description');
-            $table->string('dimension');
-            $table->foreign('dimension')->references('name')->on('dimensions')->onUpdate('cascade')->onDelete('cascade');
-            $table->unsignedInteger('scaleid');
-            $table->foreign('scaleid')->references('id')->on('scales')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedInteger('dimension');
+            $table->foreign('dimension')->references('id')->on('dimensions')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

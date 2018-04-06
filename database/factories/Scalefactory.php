@@ -17,11 +17,10 @@ $factory->define(App\Scale::class, function (Faker $faker) {
 });
 $factory->define(App\Question::class, function (Faker $faker) {
     $rand = rand(1,5);
-    $dimension = DB::table('dimensions')->where('scaleid',$rand)->pluck('name')->toarray();
+    $dimension = DB::table('dimensions')->where('scaleid',$rand)->pluck('id')->toarray();
     return [
         'description' =>$faker->sentence(),
-        'dimension' =>$faker->randomElement($dimension),
-        'scaleid' =>$rand
+        'dimension' =>$faker->randomElement($dimension)
     ];
 });
 $factory->define(App\Dimension::class, function (Faker $faker) {

@@ -17,21 +17,21 @@ class ScaleController extends Controller
     public function getData(){
         $scales=Scale::all()->toarray();
         // $Question=Question::all()->groupBy('scaleid');
-        $Question = DB::table('scales')
-            ->leftjoin('questions','scales.id','=','questions.scaleid')
-            ->select('scales.id', DB::raw('count(scaleid) as total'))
-            ->groupBy('scales.id')
-            ->get();
-        foreach ($Question as $key => $value) {
-            $scales[$key]["questions"]=$value->total;           
-        }
+        // $Question = DB::table('scales')
+        //     ->leftjoin('questions','scales.id','=','questions.scaleid')
+        //     ->select('scales.id', DB::raw('count(scaleid) as total'))
+        //     ->groupBy('scales.id')
+        //     ->get();
+        // foreach ($Question as $key => $value) {
+        //     $scales[$key]["questions"]=$value->total;           
+        // }
         return $scales;
     }
     public function getOneData(Scale $scale){
         $dimensions=Dimension::where('scaleid',$scale->id)->get()->toarray();
         foreach ($dimensions as $key => $value) {
-            $dimensionName = $value["name"];
-            $questions= Question::where(['scaleid'=>$scale->id,'dimension'=>$dimensionName])->get()->toarray();
+            $dimension = $value["id"];
+            $questions= Question::where(['dimension'=>$dimension])->get()->toarray();
             $dimensions[$key]["questions"]=$questions;
         }
         $scale["dimensions"] = $dimensions;
@@ -46,12 +46,12 @@ class ScaleController extends Controller
             $dimensions = array();
             foreach ($dimensionsarr as $dkey => $dvalue) {
                 if(!empty($dvalue))
-                    Dimension::create(["name"=>$dvalue,"scaleid"=>$scaleid]);
+                    $Did = Dimension::create(["name"=>$dvalue,"scaleid"=>$scaleid])->id;
                 @$questionsarr = explode("*", $input["d".($dkey+1)]);
                 $questions =array();
                 foreach ($questionsarr as $qkey => $qvalue) {
                     if(!empty($qvalue))
-                        Question::create(["description"=>$qvalue,"scaleid"=>$scaleid,"dimension"=>$dvalue]);
+                        Question::create(["description"=>$qvalue,"dimension"=>$Did]);
                 }
             }
         } catch (\Illuminate\Database\QueryException $e) {
@@ -76,22 +76,35 @@ class ScaleController extends Controller
         $oldname = Scale::find($scaleid)->name;
         //更改名稱及等第
         if($newname!=$oldname){
-            Scale::find($scaleid)->update(["name"=>$input["newData"]["name"],"level"=>$input["newData"]["level"]]);
+            try {
+                Scale::find($scaleid)->update(["name"=>$input["newData"]["name"],"level"=>$input["newData"]["level"]]);
+            } catch (\Illuminate\Database\QueryException $e) {
+                $error = $e->getCode();
+                switch ($error) {
+                    case '23000':
+                        return \Response::json(['status' => 'error', 'msg' => '量表名稱重複']);
+                        break;
+                    default:
+                        return \Response::json(['status' => 'error', 'msg' => '發生未預期錯誤，請聯絡管理人員','statuscode' => $error]);
+                        break;
+                }
+            }
         }
         else{
             Scale::find($scaleid)->update(["level"=>$input["newData"]["level"]]);
         }
         //更改構面
-        // return \Response::json(['status' => 'ok', 'msg' => isset($input["oldData"])]);
         if(array_key_exists("oldData",$input)){
             $olddimensions = $input["oldData"]["oDimensionInput"];
         }else{
             $olddimensions=array();
         }
-        @$newdimensions = $input["newData"]["DimensionOInput"];
-        @$adddimensions = $input["newData"]["DimensionInput"];
-        $newdimensions = explode("*", $newdimensions);
-        // print_r($newdimensions);
+        if(array_key_exists("DimensionOInput",$input["newData"])){
+            $newdimensions = $input["newData"]["DimensionOInput"];
+            $newdimensions = explode("*", $newdimensions);
+        }else{
+            $newdimensions=array();
+        }
         foreach ($olddimensions as $key => $value) {
             if($newdimensions[$key])
                 Dimension::find($value)->update(["name"=>$newdimensions[$key]]);
@@ -100,15 +113,29 @@ class ScaleController extends Controller
                 Dimension::find($value)->delete();
             }
         }
-        $olddimensionsL = count($olddimensions);
-        $newdimensionsL = count($newdimensions);
-        if(isset($adddimensions)){
+        //新增購面
+        if(array_key_exists("DimensionInput",$input["newData"])){
+            $adddimensions = $input["newData"]["DimensionInput"];
             $adddimensions = explode("*", $adddimensions);
-            foreach ($adddimensions as $key => $value) {
-                Dimension::create(["name"=>$value,"scaleid"=>$scaleid]);
-            }
+        }else{
+            $adddimensions=array();
         }
-        //將多餘資料刪除
+        if(!array_key_exists("oldData",$input)){
+                $input["oldData"]=array();
+        }
+        if(array_key_exists("oDimensionInput",$input["oldData"])){
+        }else{
+            $input["oldData"]["oDimensionInput"]=array();
+        }
+        $oDimensionIndex = $input["oldData"]["oDimensionInput"];
+        
+        foreach ($adddimensions as $key => $value) {
+            //新增構面時把id記下來 這樣才能同時新增題目
+            $Did = Dimension::create(["name"=>$value,"scaleid"=>$scaleid])->id;
+            
+            array_push($oDimensionIndex, $Did);
+        }
+        //刪除多餘項目
         unset($input["oldData"]["oDimensionInput"]);
         unset($input["newData"]["DimensionInput"]);
         unset($input["newData"]["DimensionOInput"]);
@@ -120,15 +147,45 @@ class ScaleController extends Controller
         }else{
             $oldquestions=array();
         }
-        $newquestions = $input["newData"];
+        if(array_key_exists("oldquestions",$input["newData"])){
+            $newquestions = $input["newData"]["oldquestions"];
+        }else{
+            $newquestions = array();
+        }
+
         foreach ($newquestions as $key => $value) {
             $newquestions[$key] = explode("*", $value);
         }
         foreach ($oldquestions as $key => $value) {
             foreach ($value as $qkey => $qvalue) {
-                Question::find($qvalue)->update(["description"=>$newquestions[substr($key,1)][$qkey]]);
+                if($newquestions[$key][$qkey])
+                    Question::find($qvalue)->update(["description"=>$newquestions[$key][$qkey]]);
+                else
+                    Question::find($qvalue)->delete();
             }
         }
+        if(array_key_exists("newquestions",$input["newData"])){
+            $addQuestions = $input["newData"]["newquestions"];
+        }else{
+            $addQuestions = array();
+        }
+        foreach ($addQuestions as $key => $value) {
+            $addQuestions[$key] = explode("*", $value);
+        }
+
+        // print_r($oDimensionIndex);
+        // print_r($addQuestions);
+        foreach ($addQuestions as $key => $value) {
+            foreach ($value as $vkey => $vvalue) {
+                Question::create(["description"=>$vvalue,"dimension"=>$oDimensionIndex[(substr($key,1)-1)]]);
+            }
+        }
+        // if(isset($addQuestions)){
+        //     $addQuestions = explode("*", $addQuestions);
+        //     foreach ($addQuestions as $key => $value) {
+        //         Question::create(["description"=>$value,"scaleid"=>$scaleid]);
+        //     }
+        // }
 
         // print_r($input);
         return \Response::json(['status' => 'ok', 'msg' => '修改成功']);
