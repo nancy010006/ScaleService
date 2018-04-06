@@ -82,8 +82,13 @@ class ScaleController extends Controller
             Scale::find($scaleid)->update(["level"=>$input["newData"]["level"]]);
         }
         //更改構面
-        $olddimensions = $input["oldData"]["oDimensionInput"];
-        $newdimensions = $input["newData"]["DimensionOInput"];
+        // return \Response::json(['status' => 'ok', 'msg' => isset($input["oldData"])]);
+        if(array_key_exists("oldData",$input)){
+            $olddimensions = $input["oldData"]["oDimensionInput"];
+        }else{
+            $olddimensions=array();
+        }
+        @$newdimensions = $input["newData"]["DimensionOInput"];
         @$adddimensions = $input["newData"]["DimensionInput"];
         $newdimensions = explode("*", $newdimensions);
         // print_r($newdimensions);
@@ -110,7 +115,11 @@ class ScaleController extends Controller
         unset($input["newData"]["name"]);
         unset($input["newData"]["level"]);
         //更改題目敘述
-        $oldquestions = $input["oldData"];
+        if(array_key_exists("oldData",$input)){
+            $oldquestions = $input["oldData"];
+        }else{
+            $oldquestions=array();
+        }
         $newquestions = $input["newData"];
         foreach ($newquestions as $key => $value) {
             $newquestions[$key] = explode("*", $value);

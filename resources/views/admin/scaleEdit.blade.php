@@ -58,6 +58,7 @@
                 url:'{{url('')}}/Scale/{{$scale->id}}',
                 data:request,
                 success:function(r){
+                    console.error(r.msg);
                     alert(r.msg);
                     history.go(0);
                 }
