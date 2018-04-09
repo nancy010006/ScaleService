@@ -11,9 +11,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('admin.index');
-});
+Route::get('/', 'SiteController@index');
 
 // 量表
 Route::get('/Scales', 'ScaleController@getData');
@@ -47,10 +45,12 @@ Route::get('/admin/scale/edit/{scale}', 'AdminController@scaleEdit');
 Route::get('/admin/default', 'AdminController@default');
 
 //一般使用者頁面
-Route::get('/site', 'SiteController@index')->middleware('isUser');
-Route::get('/site/login', 'SiteController@showLoginForm');
+Route::get('/site', 'SiteController@index');
+Route::get('/site/scales', 'SiteController@scales');
+Route::get('/site/scales/{scale}', 'SiteController@scale');
 
 
 //一般使用者驗證功能
+Route::get('/site/login', 'site\LoginController@showLoginForm');
 Route::post('/site/login', 'site\LoginController@login');
 Route::post('/site/logout', 'site\LoginController@logout');

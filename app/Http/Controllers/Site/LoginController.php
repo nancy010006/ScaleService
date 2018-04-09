@@ -35,7 +35,7 @@ class LoginController extends Controller
      */
     public function __construct()
     {
-        // $this->middleware('guest')->except('logout');
+        // $this->middleware('isUser')->except('logout');
     }
 
     public function login(Request $request)
@@ -50,5 +50,10 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
     	Auth::logout();
+        return redirect('/site');
+    }
+    public function showLoginForm()
+    {
+        return view('site.login');
     }
 }
