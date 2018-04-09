@@ -45,3 +45,12 @@ Route::get('/admin/scale', 'AdminController@scale');
 Route::get('/admin/scale/add', 'AdminController@scaleAdd');
 Route::get('/admin/scale/edit/{scale}', 'AdminController@scaleEdit');
 Route::get('/admin/default', 'AdminController@default');
+
+//一般使用者頁面
+Route::get('/site', 'SiteController@index')->middleware('isUser');
+Route::get('/site/login', 'SiteController@showLoginForm');
+
+
+//一般使用者驗證功能
+Route::post('/site/login', 'site\LoginController@login');
+Route::post('/site/logout', 'site\LoginController@logout');
