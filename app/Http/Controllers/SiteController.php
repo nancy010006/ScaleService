@@ -9,7 +9,7 @@ class SiteController extends Controller
 {
 	public function __construct()
     {
-        $this->middleware('isUser')->except('logout');
+        // $this->middleware('isUser')->except('logout');
     }
     public function index(){
         return view('site.index');

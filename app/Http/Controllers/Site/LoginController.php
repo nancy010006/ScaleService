@@ -42,7 +42,7 @@ class LoginController extends Controller
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             // 认证通过...
-            return redirect('/site');
+            return redirect('/site/scales');
         }else{
             return view('/site/login')->withErrors(array(
             'msg' => '帳號或密碼錯誤'

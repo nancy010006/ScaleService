@@ -46,7 +46,7 @@ Route::get('/admin/default', 'AdminController@default');
 
 //一般使用者頁面
 Route::get('/site', 'SiteController@index');
-Route::get('/site/scales', 'SiteController@scales');
+Route::get('/site/scales', 'SiteController@scales')->middleware('isUser');
 Route::get('/site/scales/{scale}', 'SiteController@scale');
 
 
