@@ -17,6 +17,9 @@ class SiteController extends Controller
     public function scales(){
         return view('site.scales');
     }
+    public function records(){
+        return view('site.records');
+    }
     public function scale(Scale $scale){
         return view('site.scale',['id'=>$scale->id]);
     }

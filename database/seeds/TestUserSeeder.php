@@ -16,6 +16,7 @@ class TestUserSeeder extends Seeder
             'name' => str_random(10),
             'email' => 'test@gmail.com',
             'password' => Hash::make(123),
+            'api_token' => str_random(60),
         ]);
     }
 }

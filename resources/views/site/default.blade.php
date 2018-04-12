@@ -34,9 +34,9 @@
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
-          <a class="nav-link" href="charts.html">
+          <a class="nav-link" href="{{url('/site/records')}}">
             <i class="fa fa-fw fa-area-chart"></i>
-            <span class="nav-link-text">狀況分析</span>
+            <span class="nav-link-text">歷程記錄</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">

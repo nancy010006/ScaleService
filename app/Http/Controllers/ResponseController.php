@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use App\Scale;
 use App\Response;
 
 class ResponseController extends Controller
@@ -14,6 +15,17 @@ class ResponseController extends Controller
     }
     public function getOneData(Request $request,Response $Response){
         return $Response;
+    }
+    public function getSomeOneHistoryData(Request $request){
+        $userid = $request->user()->id;
+        $scales = Scale::select('scales.id','scales.name')->join('responses','responses.scaleid','=','scales.id')->where('responses.userid',$userid)->groupBy('scales.id','scales.name')->get()->toarray();
+        foreach ($scales as $key => $value) {
+            $scales[$key]["responses"]=array();
+            $responses = Scale::select('responses.response','responses.created_at')->join('responses','responses.scaleid','=','scales.id')->where('responses.userid',$userid)->where('scales.id',$value['id'])->get()->toarray();
+            $scales[$key]["responses"]=$responses;
+        }
+        return $scales;
+        // return Response::orderBy('scaleid')->where('userid',$userid)->get();
     }
     public function insert(Request $request){
         try {

@@ -20,5 +20,6 @@ $factory->define(App\User::class, function (Faker $faker) {
         'email' => $faker->unique()->safeEmail,
         'password' => Hash::make(123), // secret
         'remember_token' => str_random(10),
+        'api_token' => str_random(60),
     ];
 });

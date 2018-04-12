@@ -36,6 +36,11 @@ Route::post('/Response', 'ResponseController@insert');
 Route::put('/Response/{Response}', 'ResponseController@update');
 Route::delete('/Response/{Response}', 'ResponseController@delete');
 
+//一般使用者驗證功能
+Route::get('/site/login', 'site\LoginController@showLoginForm');
+Route::post('/site/login', 'site\LoginController@login');
+Route::post('/site/logout', 'site\LoginController@logout');
+
 //管理員頁面
 Route::get('/admin', 'AdminController@index');
 Route::get('/admin/tables', 'AdminController@tables');
@@ -47,10 +52,9 @@ Route::get('/admin/default', 'AdminController@default');
 //一般使用者頁面
 Route::get('/site', 'SiteController@index');
 Route::get('/site/scales', 'SiteController@scales')->middleware('isUser');
+Route::get('/site/records', 'SiteController@records')->middleware('isUser');
 Route::get('/site/scales/{scale}', 'SiteController@scale');
 
 
-//一般使用者驗證功能
-Route::get('/site/login', 'site\LoginController@showLoginForm');
-Route::post('/site/login', 'site\LoginController@login');
-Route::post('/site/logout', 'site\LoginController@logout');
+Route::get('/login', 'site\LoginController@showLoginForm')->name('login');
+
