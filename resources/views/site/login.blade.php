@@ -14,6 +14,11 @@
   <link href="{{url('')}}/vendor2/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
   <!-- Custom styles for this template-->
   <link href="{{url('')}}/css/sb-admin.css" rel="stylesheet">
+  <style type="text/css">
+    strong{
+      color: red;
+    }
+  </style>
 </head>
 
 <body class="bg-dark">
@@ -22,7 +27,6 @@
       <div class="card-header">Login</div>
       <div class="card-body">
         <form method="POST" action="{{ url('site/login') }}">
-          @csrf
           <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
             <input class="form-control" id="exampleInputEmail1" type="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
@@ -36,12 +40,18 @@
               <label class="form-check-label">
                 <input class="form-check-input" type="checkbox"> Remember Password</label>
             </div>
+            @csrf
+          @if ($errors->has('msg'))
+              <span >
+                  <strong>{{ $errors->first('msg') }}</strong>
+              </span>
+          @endif
           </div>
-          <button class="btn btn-primary btn-block" type="submit">Login</button>
+          <button class="btn btn-primary btn-block" type="submit">登入</button>
         </form>
         <div class="text-center">
-          <a class="d-block small mt-3" href="register.html">Register an Account</a>
-          <a class="d-block small" href="forgot-password.html">Forgot Password?</a>
+          <a class="d-block small mt-3" href="register.html">註冊</a>
+          <a class="d-block small" href="forgot-password.html">忘記密碼</a>
         </div>
       </div>
     </div>

@@ -44,7 +44,9 @@ class LoginController extends Controller
             // 认证通过...
             return redirect('/site');
         }else{
-            return 2;
+            return view('/site/login')->withErrors(array(
+            'msg' => '帳號或密碼錯誤'
+            ));
         }
     }
     public function logout(Request $request)

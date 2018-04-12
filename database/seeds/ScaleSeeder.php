@@ -13,6 +13,6 @@ class ScaleSeeder extends Seeder
     {
         factory(App\Scale::class, 10)->create();
         factory(App\Dimension::class, 25)->create();
-        factory(App\Question::class, 40)->create();
+        factory(App\Question::class, 250)->create();
     }
 }
