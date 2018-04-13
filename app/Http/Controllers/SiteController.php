@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Scale;
+use Illuminate\Support\Facades\Auth;
 
 class SiteController extends Controller
 {
@@ -22,5 +23,8 @@ class SiteController extends Controller
     }
     public function scale(Scale $scale){
         return view('site.scale',['id'=>$scale->id]);
+    }
+    public function getAPIToken(){
+        return Auth::user()->api_token;
     }
 }

@@ -49,6 +49,8 @@ Route::get('/admin/scale/add', 'AdminController@scaleAdd');
 Route::get('/admin/scale/edit/{scale}', 'AdminController@scaleEdit');
 Route::get('/admin/default', 'AdminController@default');
 
+//拿token
+Route::get('site/token', 'SiteController@getAPIToken');
 //一般使用者頁面
 Route::get('/site', 'SiteController@index');
 Route::get('/site/scales', 'SiteController@scales')->middleware('isUser');
