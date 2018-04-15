@@ -53,6 +53,7 @@ Route::get('/admin/default', 'AdminController@default');
 Route::get('site/token', 'SiteController@getAPIToken');
 //一般使用者頁面
 Route::get('/site', 'SiteController@index');
+Route::get('/site/register', 'SiteController@register');
 Route::get('/site/scales', 'SiteController@scales')->middleware('isUser');
 Route::get('/site/records', 'SiteController@records')->middleware('isUser');
 Route::get('/site/scales/{scale}', 'SiteController@scale');

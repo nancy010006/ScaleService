@@ -32,7 +32,7 @@
         <div class="card-header">
           <i class="fa fa-area-chart"></i> Area Chart Example</div>
         <div class="card-body">
-          <div id="container"></div>
+			<canvas id="canvas"></canvas>
         </div>
         <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
       </div>
@@ -40,7 +40,7 @@
 @section('css')
 <style type="text/css">
 	.highcharts-label{
-		display:none;
+		/*display:none;*/
 	}
 </style>
 @endsection
@@ -109,53 +109,72 @@
 		})
 	}
 	function makeChart(){
+		window.chartColors =[
+			'rgb(255, 99, 132)',
+			'rgb(255, 159, 64)',
+			'rgb(255, 205, 86)',
+			'rgb(75, 192, 192)',
+			'rgb(54, 162, 235)',
+			'rgb(153, 102, 255)',
+			'rgb(201, 203, 207)'
+		];
 		var xAxis = [];
 		$.each(scale,function(index,val){
 			xAxis.push(val.created_at);
 		})
 		var allD = scale[0].score;
 		var data = [];
+		var i = 0;
 		$.each(allD,function(index,val){
-			var tmp = {name:index,data:[]};
+			var tmp = {label:index,data:[],backgroundColor: window.chartColors[i%7],borderColor: window.chartColors[i%7],fill: false,pointHitRadius: 20};
+			if(index=="total")
+				tmp.borderDash= [5, 5];
+			i++;
 			$.each(scale,function(sindex,sval){
 				// console.log();
 				tmp.data.push(sval.score[index])
 			})
 			data.push(tmp);
 		})
-		Highcharts.chart('container', {
- 
-		    title: {
-		        text: '歷史紀錄'
-		    },
-
-		    yAxis: {
-		        title: {
-		            text: '分數'
-		        }
-		    },
-
-		    xAxis:{
-		    	categories:xAxis
-		    },
-		    series: data,
-
-		    responsive: {
-		        rules: [{
-		            condition: {
-		                maxWidth: 500
-		            },
-		            chartOptions: {
-		                legend: {
-		                    layout: 'horizontal',
-		                    align: 'center',
-		                    verticalAlign: 'bottom'
-		                }
-		            }
-		        }]
-		    }
-
-		});
+		console.error(data);
+		var config = {
+			type: 'line',
+			data: {
+				labels: xAxis,
+				datasets: data
+			},
+			options: {
+				responsive: true,
+				legend: {
+					position: 'bottom',
+				},
+				hover: {
+					mode: 'index'
+				},
+				scales: {
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: '時間'
+						}
+					}],
+					yAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: '得分'
+						}
+					}]
+				},
+				title: {
+					display: true,
+					text: '歷程記錄'
+				}
+			}
+		};
+		var ctx = document.getElementById('canvas').getContext('2d');
+		window.myLine = new Chart(ctx, config);
 	}
 </script>
 @endsection
