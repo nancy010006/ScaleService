@@ -18,3 +18,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 Route::get('/historyResponses', 'ResponseController@getSomeOneHistoryResponses')->middleware('auth:api');
+Route::get('/historyResponse/{Scale}', 'ResponseController@getSomeOneHistoryResponse')->middleware('auth:api');

@@ -56,6 +56,7 @@ Route::get('/site', 'SiteController@index');
 Route::get('/site/scales', 'SiteController@scales')->middleware('isUser');
 Route::get('/site/records', 'SiteController@records')->middleware('isUser');
 Route::get('/site/scales/{scale}', 'SiteController@scale');
+Route::get('/site/record/{scale}', 'SiteController@record');
 
 
 Route::get('/login', 'site\LoginController@showLoginForm')->name('login');

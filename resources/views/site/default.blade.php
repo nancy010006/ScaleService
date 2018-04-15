@@ -179,7 +179,7 @@
     <!-- Custom scripts for all pages-->
     <script src="{{url('')}}/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="{{url('')}}/js/sb-admin-datatables.min.js"></script>
+    <!-- <script src="{{url('')}}/js/sb-admin-datatables.min.js"></script> -->
     <script src="{{url('')}}/js/sb-admin-charts.min.js"></script>
     @yield('js')
   </div>

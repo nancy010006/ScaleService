@@ -15,13 +15,13 @@ $factory->define(App\Response::class, function (Faker $faker) {
     }
     $level = DB::table('scales')->where('id',$scaleid)->get();
     $level = $level[0]->level;
-    $response ="{";
+    $response ="[";
     foreach ($scale->get()->toarray() as $key => $value) {
-        $response.=$value->id.":";
-        $response.=rand(1,$level).",";
+        $response.='{"qid":'.$value->id.',';
+        $response.='"val":'.rand(1,$level)."},";
     }
     $response = substr($response, 0,-1);
-    $response .= '}';
+    $response .= ']';
     // print_r($response);
     return [
         'response' =>$response,
