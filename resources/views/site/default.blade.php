@@ -16,6 +16,7 @@
   <link href="{{url('')}}/vendor2/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="{{url('')}}/css/sb-admin.css" rel="stylesheet">
+  @yield('css')
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
