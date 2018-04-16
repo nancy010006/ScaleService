@@ -21,5 +21,9 @@ $factory->define(App\User::class, function (Faker $faker) {
         'password' => Hash::make(123), // secret
         'remember_token' => str_random(10),
         'api_token' => str_random(60),
+        'birthday' => $faker->date('Y-m-d','now'),
+        'area' => $faker->cityPrefix,
+        'sex' => $faker->title,
+        'job' => $faker->jobTitle,
     ];
 });

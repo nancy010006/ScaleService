@@ -26,6 +26,7 @@ $factory->define(App\Response::class, function (Faker $faker) {
     return [
         'response' =>$response,
         'scaleid' =>$scaleid,
-        'userid' =>$userid
+        'userid' =>$userid,
+        'created_at' => $faker->date('Y-m-d','now'),
     ];
 });

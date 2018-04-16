@@ -55,7 +55,7 @@ class ResponseController extends Controller
         $questionNum['total']=$sum;
         // print_r($questionNum);
         // print_r($comparison);
-        $responses = Scale::select('responses.response','responses.created_at')->join('responses','responses.scaleid','=','scales.id')->where('responses.userid',$userid)->where('scales.id',$scaleid)->get()->toarray();
+        $responses = Scale::select('responses.response','responses.created_at')->join('responses','responses.scaleid','=','scales.id')->where('responses.userid',$userid)->where('scales.id',$scaleid)->orderBy('responses.created_at')->get()->toarray();
         foreach ($responses as $key => $value) {
             $tmp = $temp;
             // print_r($tmp);
