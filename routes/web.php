@@ -61,4 +61,4 @@ Route::get('/site/record/{scale}', 'SiteController@record');
 
 
 Route::get('/login', 'site\LoginController@showLoginForm')->name('login');
-
+Route::post('/register', 'Auth\RegisterController@register');

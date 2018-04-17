@@ -260,7 +260,11 @@
 
     <!-- Custom scripts for this template -->
     <script src="{{url('')}}/js/creative.min.js"></script>
-
+    @if (session('status'))
+      <script type="text/javascript">
+        alert("註冊成功");
+      </script>
+    @endif
   </body>
 
 </html>

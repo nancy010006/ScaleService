@@ -41,7 +41,6 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            // 认证通过...
             return redirect('/site/scales');
         }else{
             return view('/site/login')->withErrors(array(

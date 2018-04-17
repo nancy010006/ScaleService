@@ -33,24 +33,33 @@
     <div class="card card-register mx-auto mt-5">
       <div class="card-header">註冊新帳號</div>
       <div class="card-body">
-        <form>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <form method="post" action="{{url('')}}/register">
           <div class="form-group">
                 <label for="exampleInputName">姓名</label>
-                <input class="form-control" id="exampleInputName" type="text" aria-describedby="nameHelp">
+                <input name="name" class="form-control" id="exampleInputName" type="text" aria-describedby="nameHelp" required="" value="{{old('name')}}">
           </div>
           <div class="form-group">
             <label for="exampleInputEmail1">Email</label>
-            <input class="form-control" id="exampleInputEmail1" type="email" aria-describedby="emailHelp">
+            <input name="email" class="form-control" id="exampleInputEmail1" type="email" aria-describedby="emailHelp" required="">
           </div>
           <div class="form-group">
             <div class="form-row">
               <div class="col-md-6">
                 <label for="exampleInputPassword1">密碼</label>
-                <input class="form-control" id="exampleInputPassword1" type="password">
+                <input name="password" class="form-control" id="exampleInputPassword1" type="password" required="">
               </div>
               <div class="col-md-6">
                 <label for="exampleConfirmPassword">確認密碼</label>
-                <input class="form-control" id="exampleConfirmPassword" type="password" >
+                <input name="password_confirmation" class="form-control" id="exampleConfirmPassword" type="password" required="">
               </div>
             </div>
           </div>
@@ -58,11 +67,12 @@
             <div class="form-row">
               <div class="col-md-6">
                 <label for="exampleConfirmPassword">生日</label>
-                <input class="form-control" id="exampleConfirmPassword" type="date" >
+                <input name="birthday" class="form-control" id="exampleConfirmPassword" type="date" required="" value="{{old('birthday')}}">
               </div>
               <div class="col-md-6">
               <label>地區</label>
-                <select class="form-control">
+                <select name="area" class="form-control" required="">
+                    <option value=""></option>
                     <option value="北部">北部</option>
                     <option value="中部">中部</option>
                     <option value="南部">南部</option>
@@ -76,17 +86,18 @@
             <div class="form-row">
             <div class="col-md-3">
                 <label class="radio-inline">
-                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline1" value="option1" checked>男性
+                <input type="radio" name="sex" id="optionsRadiosInline1" value="男性" required="">男性
                 </label>
               </div>
               <div class="col-md-3">
                 <label class="radio-inline">
-                <input type="radio" name="optionsRadiosInline" id="optionsRadiosInline2" value="option2">女性
+                <input type="radio" name="sex" id="optionsRadiosInline2" value="女性" required="">女性
                 </label>
               </div>
               <div class="col-md-6">
               <label>職業</label>
-                <select class="form-control">
+                <select name="job" class="form-control" required="">
+                    <option value=""></option>
                     <option value="工">工</option>
                     <option value="商">商</option>
                     <option value="農">農</option>
@@ -97,7 +108,8 @@
 
             </div>
           </div>
-          <a class="btn btn-primary btn-block" href="login.html">註冊</a>
+          <button type="submit" class="btn btn-primary btn-block">註冊</button>
+          @csrf
         </form>
         <div class="text-center">
           <a class="d-block small mt-3" href="{{url('')}}/site/login">登入頁面</a>
