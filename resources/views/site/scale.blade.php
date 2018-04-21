@@ -6,7 +6,7 @@
 	var i = 1;
 	$(document).ready(function(){
 		init();
-				console.log(ScaleData);
+		$('#submit').hide();
 		$.each(ScaleData.dimensions,function(index,val){
 			var Qnum = 1;
 			$('#page_divide').append('<div id="divide'+pd+'" name="'+pd+'"></div>');
@@ -34,20 +34,29 @@
 	function page_down(){
 		$('div[id^="divide"]').hide();
 		$('#divide'+i).show();
-		console.log(i);
+		console.log("d"+i);
 		if(i == ScaleData.dimensions.length){
 			$('#down').hide();
-		}else
+			$('#submit').show();
+		}else{
 			i++;
+			$('#up').show();
+			$('#down').show();
+			$('#submit').hide();
+		}
 	}
 	function page_up(){
 	    --i;
 		$('div[id^="divide"]').hide();
 		$('#divide'+i).show();
-		console.log(i);
-		// if(i == 1){
-		// 	$('#up').hide();
-		// }
+		console.log("u"+i);
+		$('#submit').hide();
+		if(i == 1){
+			$('#up').hide();
+		}else{
+			$('#up').show();
+			$('#down').show();
+		}
 	}
 </script>
 @endsection
@@ -55,17 +64,9 @@
 <div id="page_divide">
 	<div id="questions" class="container">
 </div></div>
-<button id="up" onclick="page_up()"><img src="{{url('')}}/img/left-arrow.png"></button>
-<button id="down" onclick="page_down()"><img src="{{url('')}}/img/right-arrow.png"></button>
-<!-- <ul class="pagination">
-	<li><a href="#">&laquo;</a></li>
-	<li><a href="#">1</a></li>
-	<li><a href="#">2</a></li>
-	<li><a href="#">3</a></li>
-	<li><a href="#">4</a></li>
-	<li><a href="#">5</a></li>
-	<li><a href="#">&raquo;</a></li>
-</ul> -->
+<button id="up" class="btn btn-light" onclick="page_up()"><img src="{{url('')}}/img/left-arrow.png"></button>
+<button id="down" class="btn btn-light" onclick="page_down()"><img src="{{url('')}}/img/right-arrow.png"></button>
+<input id="submit" type="submit" name="SUBMIT">
 @endsection
 @section('css')
 @endsection
