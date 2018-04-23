@@ -108,4 +108,70 @@ class ResponseController extends Controller
         $Response->delete();
     	return \Response::json(['status' => 'ok', 'msg' => '刪除成功']);
     }
+    public function getstd(Request $request,Response $Response,Scale $Scale){
+        $scaleid =  $Scale->id;
+        $result = array();
+        //result為所有構面 {a:array(),b:array()}
+        $dimensions = DB::table('questions')->select('dimensions.name')->join('dimensions','dimensions.id','=','questions.dimension')->where('dimensions.scaleid',$scaleid)->groupBy('dimensions.name')->get()->toarray();
+        foreach ($dimensions as $key => $value) {
+            $result['std'][$value->name] = array();
+            $result['avg'][$value->name] = 0;
+        }
+        //total平均及標準差
+        $result['std']['total'] = array();
+        $result['avg']['total'] = 0;
+        //comparsion qid對到各構面
+        $questions = DB::table('scales')->select('dimensions.name as dname','questions.id as qid')->join('dimensions','scales.id','=','dimensions.scaleid')->join('questions','questions.dimension','=','dimensions.id')->where('scales.id',$scaleid)->orderBy('questions.id')->get()->toarray();
+        $comparison = array();
+        foreach ($questions as $key => $value) {
+            $comparison[$value->qid] = $value->dname;
+        }
+        $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->get();
+        // print_r($comparison);
+        foreach ($responses as $key => $value) {
+            // print_r($value->response);
+            $tmp =jsonResponseTransfer($value->response);
+            foreach ($tmp as $tkey => $tvalue) {
+                // print_r($result['std'][$comparison[$tkey]]);
+                // print_r($tvalue);
+                array_push($result['std'][$comparison[$tkey]],$tvalue);
+                array_push($result['std']['total'],$tvalue);
+            }
+        }
+        foreach ($result['std'] as $key => $value) {
+            $result['avg'][$key] = array_sum($result['std'][$key])/count($result['std'][$key]);
+            $result['std'][$key] = standard_deviation($result['std'][$key]);
+        }
+        // $responses = Scale::select('responses.response','responses.created_at')->join('responses','responses.scaleid','=','scales.id')->where('responses.userid',$userid)->where('scales.id',$scaleid)->orderBy('responses.created_at')->get()->toarray();
+        // foreach ($responses as $key => $value) {
+        //     $tmp = $temp;
+        //     // print_r($tmp);
+        //     $response = json_decode($value['response']);
+        //     $responses[$key]['response'] = $response;
+        //     // $tmp =$temp['dimensions'];
+        //     foreach ($response as $rkey => $rvalue) {
+        //         $tmp['score'][$comparison[$rvalue->qid]]+=$rvalue->val;
+        //     }
+
+        //     //總分
+        //     $sum = 0;
+        //     foreach ($tmp['score'] as $tkey => $tvalue) {
+        //         $sum+=$tvalue;
+        //     }
+        //     $tmp['score']['total'] = $sum;
+
+        //     //平均
+        //     foreach ($tmp['score'] as $tkey => $tvalue) {
+        //         $tmp['score'][$tkey] = round($tmp['score'][$tkey]/$questionNum[$tkey],2);
+        //     }
+
+        //     // print_r($value);
+        //     $tmp['created_at'] = $value['created_at'];
+        //     array_push($result, $tmp);
+        // }
+        // return \Response::json($result);
+        // $avg=array_sum($a)/count($a);
+        // $std = standard_deviation($a);
+        return $result;
+    }
 }

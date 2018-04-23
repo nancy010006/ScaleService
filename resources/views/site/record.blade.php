@@ -42,6 +42,9 @@
 	.highcharts-label{
 		/*display:none;*/
 	}
+	.highest{
+		background-color: red;
+	}
 </style>
 @endsection
 @section('js')
@@ -53,9 +56,12 @@
 	var token;
 	var scale;
 	var tdLength = 0;
+	var std;
+	var avg;
 	$(document).ready(function(){
 		init();
-		console.log(scale);
+		// console.log(scale);
+	    getStdAvg();
 		addToTable();
 		$("#dataTable").dataTable({
 	        "order": [[ tdLength, "desc" ]]
@@ -84,6 +90,17 @@
 			}
 		})
 	}
+	function getStdAvg(){
+		$.ajax({
+			url:'{{url('')}}/api/getstd/{{$id}}',
+			type:'get',
+			async:false,
+			success:function(r){
+				std=r.std;
+				avg=r.avg;
+			}
+		})
+	}
 	function addToTable(){
 		//放THEAD和TFOOT
 		var allD = scale[0].score;
@@ -101,7 +118,11 @@
 		$.each(scale,function(index,val){
 			var td = '';
 			$.each(val.score,function(sindex,sval){
-				td+='<td>'+sval+'</td>';
+				// console.log(avg[sindex]);
+				if(sval>avg[sindex]+std[sindex])
+					td+='<td class="highest">'+sval+'</td>';
+				else
+					td+='<td>'+sval+'</td>';
 			})
 			td+='<td>'+val.created_at+'</td>';
 			var tr = '<tr>'+td+'</tr>';
