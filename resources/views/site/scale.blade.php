@@ -12,13 +12,14 @@
 	});
 	$(document).ready(function(){
 		init();
-		console.log(ScaleData.dimensions.length);
+		// console.log();//dimensions.length
+		$('.jumbotron').append('<h1>'+"您現在正在填寫"+ScaleData.name+"問卷"+'</h1>');
 		$('#submit').hide();
 		$.each(ScaleData.dimensions,function(index,val){
 			$('#page_divide').append('<div id="divide'+pd+'" name="'+pd+'"></div>');
-			$('#divide'+pd).append('<br><div class="alert alert-warning"><ul class="list-group"><strong>'+val.name+'</strong></ul></div>');
+			$('#divide'+pd).append('<div class="alert alert-warning"><ul class="list-group"><strong>'+val.name+'</strong></ul></div>');
 			$.each(val.questions,function(qindex,qval){
-				$('#divide'+pd).append('<li class="list-group-item"><p>'+(Qnum++)+'.'+qval.description+'</p></li>');
+				$('#divide'+pd).append('<br><li class="list-group-item"><p>'+(Qnum++)+'.'+qval.description+'</p></li>');
 				for (var i = 1; i <= ScaleData.level; i++) {
 					$('#divide'+pd).append(i+'<input type="radio"  name="'+ScaleData.dimensions[index].name+(qindex)+'"id="'+ScaleData.dimensions[index].name+i+'"'+'value="'+i+'">');
 				}
@@ -119,16 +120,22 @@
 @endsection
 @section('content')
 <!-- <form id="myform"> -->
+<div class="jumbotron">
+ </div>
 <div class="row">
-<div class="col-sm-2">
-<button id="up" class="btn btn-light" onclick="page_up()"><p class="fa fa-angle-left"></p></button></div>
-<div class="col-sm-8" id="page_divide">
+<div class="col-sm-1"></div>
+<div class="col-sm-10" id="page_divide">
 	<div id="questions" class="container">
 </div></div>
+<div class="col-sm-1"></div>
+</div>
 <!-- </form> -->
-<div class="col-sm-2">
-<button id="down" class="btn btn-light" onclick="page_down()"><p class="fa fa-angle-right"></p></button></div>
-<input class="btn btn-outline-primary" align="center" style="width:100%" id="submit" type="submit" name="SUBMIT" onclick="submit()">
+<div class="row">
+<div align="middle" class="col">
+<button id="up" style="width: 50%" class="btn btn-light" onclick="page_up()" align="middle"><p class="fa fa-angle-left fa-4x"><br><span style="font-size: 15px;">上一頁</span></p></button></div>
+<div align="middle" class="col">
+<button id="down" style="width: 50%" class="btn btn-light" onclick="page_down()"><p class="fa fa-angle-right fa-4x" ><br><span style="font-size: 15px;">下一頁</span></p></button></div>
+<input class="btn btn-outline-primary btn-lg btn-block" style="width:100%" id="submit" type="submit" name="SUBMIT" onclick="submit()">
 @endsection
 @section('css')
 <style type="text/css">
@@ -136,9 +143,10 @@
 		color:red;
 	}
 	input[type="radio"]{
-		width: 30px;
+		width: 15px;
 		height: 30px;
-		margin: 5px;
+		margin: 10px;
 	}
+
 </style>
 @endsection
