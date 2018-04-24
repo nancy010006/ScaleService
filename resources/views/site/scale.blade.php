@@ -5,6 +5,11 @@
 	var pd = 1;
 	var i = 1;
 	var Qnum = 1;
+	$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+	    }
+	});
 	$(document).ready(function(){
 		init();
 		console.log(ScaleData.dimensions.length);
@@ -85,12 +90,9 @@
 		$('input').attr('checked',true);
 	}
 	function submit(){
-		// alert(123);
 		var count = 0;
-		var returnObj={"respose":[]};
+		var returnObj={"response":[]};
 		var qidarr = [];
-		// obj.respose = question_arr;
-		// console.log(ScaleData.dimensions.length);
 		for (var i = 0; i < ScaleData.dimensions.length; i++) {
 			for (var j = 0; j <ScaleData.dimensions[i].questions.length; j++) {
 				qidarr.push(ScaleData.dimensions[i].questions[j].id)
@@ -99,9 +101,19 @@
 		}
 		$.each($('input[type="radio"]:checked'),function(index,val){
 			var tmp ={"qid":qidarr[index],"val":$(val).val()};
-			returnObj.respose.push(tmp);
+			returnObj.response.push(tmp);
 		})
-		console.log(JSON.stringify(returnObj));
+		returnObj.scaleid=ScaleData.id;
+		$.ajax({
+			url:'{{url('')}}/Response',
+			type:'post',
+			data:returnObj,
+			async:false,
+			success:function(r){
+				alert(r.msg)
+            	window.location.href='{{url("")}}/site/records';
+			}
+		})
 	}
 </script>
 @endsection

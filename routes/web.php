@@ -42,12 +42,14 @@ Route::post('/site/login', 'site\LoginController@login');
 Route::post('/site/logout', 'site\LoginController@logout');
 
 //管理員頁面
-Route::get('/admin', 'AdminController@index');
-Route::get('/admin/tables', 'AdminController@tables');
-Route::get('/admin/scale', 'AdminController@scale');
-Route::get('/admin/scale/add', 'AdminController@scaleAdd');
-Route::get('/admin/scale/edit/{scale}', 'AdminController@scaleEdit');
-Route::get('/admin/default', 'AdminController@default');
+Route::prefix('admin')->group(function () {
+	Route::get('', 'AdminController@index');
+	Route::get('tables', 'AdminController@tables');
+	Route::get('scale', 'AdminController@scale');
+	Route::get('scale/add', 'AdminController@scaleAdd');
+	Route::get('scale/edit/{scale}', 'AdminController@scaleEdit');
+	Route::get('default', 'AdminController@default');
+});
 
 //拿token
 Route::get('site/token', 'SiteController@getAPIToken');

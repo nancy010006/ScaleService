@@ -8,9 +8,11 @@
         </li>
         <li class="breadcrumb-item active">Tables</li>
       </ol>
-      
+      <span class="highest descr">偏高</span>
+  	  <span class="lowest descr">偏低</span>
       <!-- Example DataTables Card-->
       <div class="card mb-3">
+      	
         <div class="card-header">
           <i class="fa fa-table"></i> {{$name}}</div>
         <div class="card-body">
@@ -43,7 +45,15 @@
 		/*display:none;*/
 	}
 	.highest{
-		background-color: red;
+		background-color: #ff2d2d;
+	}
+	.lowest{
+		background-color: #93ff93;
+	}
+	.descr{
+		display: inline;
+		width: 40px;
+		margin: 10px 10px;
 	}
 </style>
 @endsection
@@ -121,10 +131,12 @@
 				// console.log(avg[sindex]);
 				if(sval>avg[sindex]+std[sindex])
 					td+='<td class="highest">'+sval+'</td>';
+				else if(sval<avg[sindex]-std[sindex])
+					td+='<td class="lowest">'+sval+'</td>';
 				else
 					td+='<td>'+sval+'</td>';
 			})
-			td+='<td>'+val.created_at+'</td>';
+			td+='<td>'+val.created_at.slice(0,10)+'</td>';
 			var tr = '<tr>'+td+'</tr>';
 			$('#tbody').append(tr);
 		})
@@ -141,7 +153,7 @@
 		];
 		var xAxis = [];
 		$.each(scale,function(index,val){
-			xAxis.push(val.created_at);
+			xAxis.push(val.created_at.slice(0,10));
 		})
 		var allD = scale[0].score;
 		var data = [];

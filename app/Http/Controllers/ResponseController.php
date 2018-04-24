@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Scale;
 use App\Response;
 use App\Question;
@@ -85,8 +86,10 @@ class ResponseController extends Controller
         return \Response::json($result);
     }
     public function insert(Request $request){
+        $data = $request->all();
+        $userid = Auth::user()->id;
         try {
-            $Response = Response::create($request->all());
+            $Response = Response::create(['response'=>json_encode($data['response']),'scaleid'=>$data['scaleid'],'userid'=>$userid]);
 
         } catch (\Illuminate\Database\QueryException $e) {
             // dd($e);
@@ -142,36 +145,6 @@ class ResponseController extends Controller
             $result['avg'][$key] = array_sum($result['std'][$key])/count($result['std'][$key]);
             $result['std'][$key] = standard_deviation($result['std'][$key]);
         }
-        // $responses = Scale::select('responses.response','responses.created_at')->join('responses','responses.scaleid','=','scales.id')->where('responses.userid',$userid)->where('scales.id',$scaleid)->orderBy('responses.created_at')->get()->toarray();
-        // foreach ($responses as $key => $value) {
-        //     $tmp = $temp;
-        //     // print_r($tmp);
-        //     $response = json_decode($value['response']);
-        //     $responses[$key]['response'] = $response;
-        //     // $tmp =$temp['dimensions'];
-        //     foreach ($response as $rkey => $rvalue) {
-        //         $tmp['score'][$comparison[$rvalue->qid]]+=$rvalue->val;
-        //     }
-
-        //     //總分
-        //     $sum = 0;
-        //     foreach ($tmp['score'] as $tkey => $tvalue) {
-        //         $sum+=$tvalue;
-        //     }
-        //     $tmp['score']['total'] = $sum;
-
-        //     //平均
-        //     foreach ($tmp['score'] as $tkey => $tvalue) {
-        //         $tmp['score'][$tkey] = round($tmp['score'][$tkey]/$questionNum[$tkey],2);
-        //     }
-
-        //     // print_r($value);
-        //     $tmp['created_at'] = $value['created_at'];
-        //     array_push($result, $tmp);
-        // }
-        // return \Response::json($result);
-        // $avg=array_sum($a)/count($a);
-        // $std = standard_deviation($a);
         return $result;
     }
 }
