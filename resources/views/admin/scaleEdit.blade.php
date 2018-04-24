@@ -38,8 +38,8 @@
             })
         }
         $("#dimension").change(function(){
-                setDimension($("#dimension").val());
-            })
+            setDimension($("#dimension").val());
+        })
         $("#scaleform").submit(function(e){
             e.preventDefault();
             // console.log($('input[name="_token"]').val());

@@ -16,6 +16,7 @@
   <link href="{{url('')}}/vendor2/datatables/dataTables.bootstrap4.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="{{url('')}}/css/sb-admin.css" rel="stylesheet">
+  @yield('css')
 </head>
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -34,9 +35,9 @@
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Charts">
-          <a class="nav-link" href="charts.html">
+          <a class="nav-link" href="{{url('/site/records')}}">
             <i class="fa fa-fw fa-area-chart"></i>
-            <span class="nav-link-text">狀況分析</span>
+            <span class="nav-link-text">歷程記錄</span>
           </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Tables">
@@ -179,7 +180,7 @@
     <!-- Custom scripts for all pages-->
     <script src="{{url('')}}/js/sb-admin.min.js"></script>
     <!-- Custom scripts for this page-->
-    <script src="{{url('')}}/js/sb-admin-datatables.min.js"></script>
+    <!-- <script src="{{url('')}}/js/sb-admin-datatables.min.js"></script> -->
     <script src="{{url('')}}/js/sb-admin-charts.min.js"></script>
     @yield('js')
   </div>
