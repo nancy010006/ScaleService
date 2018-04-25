@@ -4,9 +4,9 @@
   <!-- Breadcrumbs-->
   <ol class="breadcrumb">
     <li class="breadcrumb-item">
-      <a href="#">Dashboard</a>
+      <a href="#">主選單</a>
     </li>
-    <li class="breadcrumb-item active">Cards</li>
+    <li class="breadcrumb-item active">歷程記錄</li>
   </ol>
   <h1>Cards</h1>
   <hr>
@@ -50,7 +50,7 @@
 			console.log(data);
 			var Scale = '<div class="col-xl-3 col-sm-6 mb-3"><div class="card text-white bg-'+ColorArray[ColorCount%4]+' o-hidden h-100"><div class="card-body"><div class="card-body-icon"><i class="fa fa-fw fa-book"></i></div><div class="mr-5">'+data.name+'</div></div><a class="card-footer text-white clearfix small z-1" href="{{url('')}}/site/record/'+data.id+'"><span class="float-left">'+data.responses+'筆記錄</span><span class="float-right"><i class="fa fa-angle-right"></i></span></a></div></div>';
 			$("#ScaleArea").append(Scale);
-			ColorCount++;
+			// ColorCount++;
 		}
 	</script>
 @endsection
