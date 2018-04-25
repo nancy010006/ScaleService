@@ -3,8 +3,9 @@
 <script type="text/javascript">
 	var ScaleData;
 	var pd = 1;
-	var i = 1;
+	var i = 0;
 	var Qnum = 1;
+	var dimensionsL;
 	$.ajaxSetup({
     headers: {
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -12,8 +13,7 @@
 	});
 	$(document).ready(function(){
 		init();
-		// console.log();//dimensions.length
-		$('.jumbotron').append('<h1>'+"您現在正在填寫"+ScaleData.name+"問卷"+'</h1>');
+		$('.jumbotron').html('<h1>您現在正在填寫'+ScaleData.name+'問卷 1/'+dimensionsL+'</h1>');
 		$('#submit').hide();
 		$.each(ScaleData.dimensions,function(index,val){
 			$('#page_divide').append('<div id="divide'+pd+'" name="'+pd+'"></div>');
@@ -26,7 +26,10 @@
 			})
 			pd++;
 		})
+		$('#up').hide();
 		$('div[id^="divide"]').hide();
+		$('#divide1').show();
+		i++;
 		test();
 	})
 	function init(){
@@ -36,40 +39,41 @@
 			async:false,
 			success:function(r){
 				ScaleData = r;
+				dimensionsL = r.dimensions.length;
 			}
 		})
 	}
 	function page_down(){
 		if(check_answer()==0)
 			return;
+		i++;
+		$('.jumbotron').html('<h1>您現在正在填寫'+ScaleData.name+'問卷 '+i+'/'+dimensionsL+'</h1>');
 		$('div[id^="divide"]').hide();
 		$('#divide'+i).show();
 		$('#up').show();
 		$('#down').show();
-		// console.log("d"+i);
 		if(i == ScaleData.dimensions.length){
 			$('#down').hide();
 			$('#submit').show();
 		 }//else if(i == 1){
-		// 	i++;
-		// 	$('#up').hide();
-		// }
 		else{
-			++i;
 			$('#submit').hide();
 		}
+		// console.log(i);
+		$("html, body").animate({scrollTop:0}, 0); 
 	}
 	function page_up(){
-	    --i;
+	    i--;
+		$('.jumbotron').html('<h1>您現在正在填寫'+ScaleData.name+'問卷 '+i+'/'+dimensionsL+'</h1>');
 		$('div[id^="divide"]').hide();
 		$('#divide'+i).show();
-		console.log("u"+i);
 		$('#up').show();
 		$('#down').show();
 		$('#submit').hide();
 		if(i == 1){
 			$('#up').hide();
 		}
+		$("html, body").animate({scrollTop:0}, 0); 
 	}
 	function check_answer(){
 		$('p[class="warn"]').remove();
