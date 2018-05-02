@@ -38,6 +38,7 @@
         </div>
         <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
       </div>
+
 @endsection
 @section('css')
 <style type="text/css">
@@ -177,6 +178,13 @@
 				datasets: data
 			},
 			options: {
+				//拿掉=曲線
+				elements: {
+		            line: {
+		                tension: 0, // disables bezier curves
+		            }
+		        },
+		        //上面拿掉曲線
 				responsive: true,
 				legend: {
 					position: 'bottom',
