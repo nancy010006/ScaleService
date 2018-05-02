@@ -67,8 +67,7 @@
 	var token;
 	var scale;
 	var tdLength = 0;
-	var std;
-	var avg;
+	var stdAndAvg;
 	$(document).ready(function(){
 		init();
 		// console.log(scale);
@@ -102,13 +101,17 @@
 		})
 	}
 	function getStdAvg(){
+		timearr = [];
+		$.each(scale,function(index,val){
+			timearr.push(val.created_at);
+		});
 		$.ajax({
-			url:'{{url('')}}/api/getstd/{{$id}}',
+			url:'{{url('')}}/api/getstd/{{$id}}?time='+timearr,
 			type:'get',
 			async:false,
 			success:function(r){
-				std=r.std;
-				avg=r.avg;
+				console.log(r);
+				stdAndAvg = r;
 			}
 		})
 	}
@@ -117,25 +120,41 @@
 		var allD = scale[0].score;
 		var th='';
 		$.each(allD,function(index,val){
-			tdLength+=1;
-			th+='<th>'+index+'</th>';
+			th+='<th colspan="2">'+index+'</th>';
 		})
-		th+='<th>填寫時間</th>';
+		th+='<th rowspan="2">填寫時間</th>';
 		var tr = '<tr>'+th+'</tr>';
 		$('#thead').append(tr);
-		$('#tfoot').append(tr);
+		// $('#tfoot').append(tr);
+
+		var th='';
+		$.each(allD,function(index,val){
+			tdLength+=1;
+			th+='<th>得分</th>';
+			th+='<th>平均</th>';
+		})
+		var tr = '<tr>'+th+'</tr>';
+		$('#thead').append(tr);
 
 		//放TD
 		$.each(scale,function(index,val){
 			var td = '';
 			$.each(val.score,function(sindex,sval){
-				// console.log(avg[sindex]);
-				if(sval>avg[sindex]+std[sindex])
+				console.log(stdAndAvg);
+				avg = stdAndAvg[index].avg[sindex];
+				std = stdAndAvg[index].std[sindex]
+				if(sval>avg+std){
 					td+='<td class="highest">'+sval+'</td>';
-				else if(sval<avg[sindex]-std[sindex])
+					td+='<td>'+avg.toString().slice(0,4)+'</td>';
+				}
+				else if(sval<avg-std){
 					td+='<td class="lowest">'+sval+'</td>';
-				else
+					td+='<td>'+avg.toString().slice(0,4)+'</td>';
+				}
+				else{
 					td+='<td>'+sval+'</td>';
+					td+='<td>'+avg.toString().slice(0,4)+'</td>';
+				}
 			})
 			td+='<td>'+val.created_at.slice(0,10)+'</td>';
 			var tr = '<tr>'+td+'</tr>';

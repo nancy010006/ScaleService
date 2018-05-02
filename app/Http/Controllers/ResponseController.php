@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Scale;
 use App\Response;
 use App\Question;
+use Barryvdh\Debugbar\Facade as Debugbar;
 
 class ResponseController extends Controller
 {
@@ -15,9 +16,11 @@ class ResponseController extends Controller
         $Responses = Response::all();
         return $Responses;
     }
+
     public function getOneData(Request $request,Response $Response){
         return $Response;
     }
+
     public function getSomeOneHistoryResponses(Request $request){
         $userid = $request->user()->id;
         $scales = Scale::select('scales.id','scales.name')->join('responses','responses.scaleid','=','scales.id')->where('responses.userid',$userid)->groupBy('scales.id','scales.name')->get()->toarray();
@@ -29,6 +32,7 @@ class ResponseController extends Controller
         return $scales;
         // return Response::orderBy('scaleid')->where('userid',$userid)->get();
     }
+
     public function getSomeOneHistoryResponse(Request $request,Scale $Scale){
         $scaleid =  $Scale->id;
         $userid = $request->user()->id;
@@ -85,6 +89,7 @@ class ResponseController extends Controller
         }
         return \Response::json($result);
     }
+
     public function insert(Request $request){
         $data = $request->all();
         $userid = Auth::user()->id;
@@ -102,48 +107,64 @@ class ResponseController extends Controller
         }
     	return \Response::json(['status' => 'ok', 'msg' => '新增成功']);
     }
+
     public function update(Request $request,Response $Response){
         $input = $request->all();
         $Response->update($input);
     	return \Response::json(['status' => 'ok', 'msg' => '修改成功']);
     }
+
     public function delete(Request $request,Response $Response){
         $Response->delete();
     	return \Response::json(['status' => 'ok', 'msg' => '刪除成功']);
     }
+
     public function getstd(Request $request,Response $Response,Scale $Scale){
         $scaleid =  $Scale->id;
-        $result = array();
         //result為所有構面 {a:array(),b:array()}
         $dimensions = DB::table('questions')->select('dimensions.name')->join('dimensions','dimensions.id','=','questions.dimension')->where('dimensions.scaleid',$scaleid)->groupBy('dimensions.name')->get()->toarray();
-        foreach ($dimensions as $key => $value) {
-            $result['std'][$value->name] = array();
-            $result['avg'][$value->name] = 0;
-        }
-        //total平均及標準差
-        $result['std']['total'] = array();
-        $result['avg']['total'] = 0;
+
         //comparsion qid對到各構面
         $questions = DB::table('scales')->select('dimensions.name as dname','questions.id as qid')->join('dimensions','scales.id','=','dimensions.scaleid')->join('questions','questions.dimension','=','dimensions.id')->where('scales.id',$scaleid)->orderBy('questions.id')->get()->toarray();
         $comparison = array();
         foreach ($questions as $key => $value) {
             $comparison[$value->qid] = $value->dname;
         }
-        $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->get();
-        // print_r($comparison);
-        foreach ($responses as $key => $value) {
-            // print_r($value->response);
-            $tmp =jsonResponseTransfer($value->response);
-            foreach ($tmp as $tkey => $tvalue) {
-                // print_r($result['std'][$comparison[$tkey]]);
-                // print_r($tvalue);
-                array_push($result['std'][$comparison[$tkey]],$tvalue);
-                array_push($result['std']['total'],$tvalue);
+        
+        //抓時間
+        $time = explode(',', $request->time);
+        Debugbar::error($time);
+        
+        $result = array();
+
+        foreach ($time as $timekey => $timevalue) {
+            //開始比對組成
+            $data = array();
+            foreach ($dimensions as $key => $value) {
+                $data['std'][$value->name] = array();
+                $data['avg'][$value->name] = 0;
             }
-        }
-        foreach ($result['std'] as $key => $value) {
-            $result['avg'][$key] = array_sum($result['std'][$key])/count($result['std'][$key]);
-            $result['std'][$key] = standard_deviation($result['std'][$key]);
+            //total平均及標準差
+            $data['std']['total'] = array();
+            $data['avg']['total'] = 0;
+
+            $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->where('created_at','<=',$timevalue)->get();
+            foreach ($responses as $key => $value) {
+                // print_r($value->response);
+                $tmp =jsonResponseTransfer($value->response);
+                foreach ($tmp as $tkey => $tvalue) {
+                    // print_r($data['std'][$comparison[$tkey]]);
+                    // print_r($tvalue);
+                    array_push($data['std'][$comparison[$tkey]],$tvalue);
+                    array_push($data['std']['total'],$tvalue);
+                }
+            }
+            foreach ($data['std'] as $key => $value) {
+                $data['avg'][$key] = array_sum($data['std'][$key])/count($data['std'][$key]);
+                $data['std'][$key] = standard_deviation($data['std'][$key]);
+            }
+            $data['created_at']=$timevalue;
+            array_push($result, $data);
         }
         return $result;
     }
