@@ -56,6 +56,9 @@
 		width: 40px;
 		margin: 10px 10px;
 	}
+	.thisTime td{
+		font-weight:bold;
+	}
 </style>
 @endsection
 @section('js')
@@ -155,19 +158,23 @@
 				std = stdAndAvg[index].std[sindex]
 				if(sval>avg+std){
 					td+='<td class="highest">'+sval+'</td>';
-					td+='<td>'+avg.toString().slice(0,4)+'</td>';
+					td+='<td>/'+avg.toString().slice(0,4)+'</td>';
 				}
 				else if(sval<avg-std){
 					td+='<td class="lowest">'+sval+'</td>';
-					td+='<td>'+avg.toString().slice(0,4)+'</td>';
+					td+='<td>/'+avg.toString().slice(0,4)+'</td>';
 				}
 				else{
 					td+='<td>'+sval+'</td>';
-					td+='<td>'+avg.toString().slice(0,4)+'</td>';
+					td+='<td>/'+avg.toString().slice(0,4)+'</td>';
 				}
 			})
-			td+='<td>'+val.created_at.slice(0,10)+'</td>';
+			td+='<td>'+val.created_at.slice(0,16)+'</td>';
 			var tr = '<tr>'+td+'</tr>';
+			if(index == scale.length-1 && location.search == "?thistime=true"){
+				alert("本次結果為粗體顯示");
+				tr = '<tr class="thisTime">'+td+'</tr>';
+			}
 			$('#tbody').append(tr);
 		})
 	}

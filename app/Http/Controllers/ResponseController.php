@@ -133,7 +133,6 @@ class ResponseController extends Controller
         
         //抓時間
         $time = explode(',', $request->time);
-        Debugbar::error($time);
         
         $result = array();
 

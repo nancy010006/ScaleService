@@ -116,7 +116,7 @@
 			async:false,
 			success:function(r){
 				alert(r.msg)
-            	window.location.href='{{url("")}}/site/records';
+            	window.location.href='{{url("")}}/site/record/{{$id}}?thistime=true';
 			}
 		})
 	}
