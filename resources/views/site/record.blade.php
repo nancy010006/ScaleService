@@ -66,6 +66,7 @@
 <script type="text/javascript">
 	var token;
 	var scale;
+	var level;
 	var tdLength = 0;
 	var stdAndAvg;
 	$(document).ready(function(){
@@ -99,6 +100,15 @@
 				scale = r;
 			}
 		})
+		//拿level
+		$.ajax({
+			url:'{{url('')}}/Scale/{{$id}}',
+			type:'get',
+			async:false,
+			success:function(r){
+				level = r.level;
+			}
+		})
 	}
 	function getStdAvg(){
 		timearr = [];
@@ -110,7 +120,7 @@
 			type:'get',
 			async:false,
 			success:function(r){
-				console.log(r);
+				// console.log(r);
 				stdAndAvg = r;
 			}
 		})
@@ -140,7 +150,7 @@
 		$.each(scale,function(index,val){
 			var td = '';
 			$.each(val.score,function(sindex,sval){
-				console.log(stdAndAvg);
+				// console.log(stdAndAvg);
 				avg = stdAndAvg[index].avg[sindex];
 				std = stdAndAvg[index].std[sindex]
 				if(sval>avg+std){
@@ -191,7 +201,6 @@
 			})
 			data.push(tmp);
 		})
-		console.error(data);
 		var config = {
 			type: 'line',
 			data: {
@@ -232,7 +241,15 @@
 				title: {
 					display: true,
 					text: '歷程記錄'
-				}
+				},
+				scales: {
+		            yAxes: [{
+		                ticks: {
+		                    suggestedMin: 1,
+		                    suggestedMax: level
+		                }
+		            }]
+		        }
 			}
 		};
 		var ctx = document.getElementById('canvas').getContext('2d');
