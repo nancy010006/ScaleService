@@ -129,7 +129,7 @@
 
 		var th='';
 		$.each(allD,function(index,val){
-			tdLength+=1;
+			tdLength+=2;
 			th+='<th>得分</th>';
 			th+='<th>平均</th>';
 		})
@@ -179,9 +179,11 @@
 		var data = [];
 		var i = 0;
 		$.each(allD,function(index,val){
-			var tmp = {label:index,data:[],backgroundColor: window.chartColors[i%7],borderColor: window.chartColors[i%7],fill: false,pointHitRadius: 20};
-			if(index=="total")
+			var tmp = {label:index,data:[],backgroundColor: window.chartColors[i%7],borderColor: window.chartColors[i%7],fill: false,pointHitRadius: 20,hidden: true};
+			if(index=="total"){
+				tmp.hidden = false;
 				tmp.borderDash= [5, 5];
+			}
 			i++;
 			$.each(scale,function(sindex,sval){
 				// console.log();
