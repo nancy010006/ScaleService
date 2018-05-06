@@ -24,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('job');
             $table->rememberToken();
             $table->string('api_token', 60)->unique();
+            $table->integer('auth');
             $table->timestamps();
         });
     }

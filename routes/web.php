@@ -43,13 +43,17 @@ Route::post('/site/logout', 'site\LoginController@logout');
 
 //管理員頁面
 Route::prefix('admin')->group(function () {
-	Route::get('', 'AdminController@index');
-	Route::get('tables', 'AdminController@tables');
-	Route::get('scale', 'AdminController@scale');
-	Route::get('scale/add', 'AdminController@scaleAdd');
-	Route::get('scale/edit/{scale}', 'AdminController@scaleEdit');
-	Route::get('default', 'AdminController@default');
+	Route::get('', 'AdminController@index')->middleware('isAdmin');
+	Route::get('tables', 'AdminController@tables')->middleware('isAdmin');
+	Route::get('scale', 'AdminController@scale')->middleware('isAdmin');
+	Route::get('scale/add', 'AdminController@scaleAdd')->middleware('isAdmin');
+	Route::get('scale/edit/{scale}', 'AdminController@scaleEdit')->middleware('isAdmin');
+	Route::get('default', 'AdminController@default')->middleware('isAdmin');
 });
+//管理員登入頁面及功能
+Route::get('admin/login', 'admin\LoginController@showLoginForm');
+Route::post('admin/login', 'admin\LoginController@login');
+Route::get('admin/logout', 'admin\LoginController@logout');
 
 //拿token
 Route::get('site/token', 'SiteController@getAPIToken');
@@ -58,8 +62,8 @@ Route::get('/site', 'SiteController@index');
 Route::get('/site/register', 'SiteController@register');
 Route::get('/site/scales', 'SiteController@scales')->middleware('isUser');
 Route::get('/site/records', 'SiteController@records')->middleware('isUser');
-Route::get('/site/scales/{scale}', 'SiteController@scale');
-Route::get('/site/record/{scale}', 'SiteController@record');
+Route::get('/site/scales/{scale}', 'SiteController@scale')->middleware('isUser');
+Route::get('/site/record/{scale}', 'SiteController@record')->middleware('isUser');
 
 
 Route::get('/login', 'site\LoginController@showLoginForm')->name('login');

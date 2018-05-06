@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Site;
+namespace App\Http\Controllers\admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -26,7 +26,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    // protected $redirectTo = '/site';
+    // protected $redirectTo = '/admin';
 
     /**
      * Create a new controller instance.
@@ -40,10 +40,10 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'auth' =>0])) {
-            return redirect('/site/scales');
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'auth' =>2])) {
+            return redirect('/admin');
         }else{
-            return view('/site/login')->withErrors(array(
+            return view('/admin/login')->withErrors(array(
             'msg' => '帳號或密碼錯誤'
             ));
         }
@@ -51,10 +51,10 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
     	Auth::logout();
-        return redirect('/site');
+        return redirect('/admin');
     }
     public function showLoginForm()
     {
-        return view('site.login');
+        return view('admin.login');
     }
 }

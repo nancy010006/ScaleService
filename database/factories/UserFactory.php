@@ -25,5 +25,6 @@ $factory->define(App\User::class, function (Faker $faker) {
         'area' => $faker->cityPrefix,
         'sex' => $faker->title,
         'job' => $faker->jobTitle,
+        'auth' => 0,
     ];
 });
