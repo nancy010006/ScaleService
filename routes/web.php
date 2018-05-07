@@ -48,6 +48,7 @@ Route::prefix('admin')->group(function () {
 	Route::get('scale', 'AdminController@scale')->middleware('isAdmin');
 	Route::get('scale/add', 'AdminController@scaleAdd')->middleware('isAdmin');
 	Route::get('scale/edit/{scale}', 'AdminController@scaleEdit')->middleware('isAdmin');
+	Route::get('scale/view/{scale}', 'AdminController@scaleView')->middleware('isAdmin');
 	Route::get('default', 'AdminController@default')->middleware('isAdmin');
 });
 //管理員登入頁面及功能

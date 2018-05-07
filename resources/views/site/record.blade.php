@@ -78,7 +78,7 @@
 	    getStdAvg();
 		addToTable();
 		$("#dataTable").dataTable({
-	        "order": [[ tdLength, "desc" ]]
+	        "order": [[ tdLength, "asc" ]]
 	    });
 	    makeChart();
 		// $.each(Scales,function(index,val){

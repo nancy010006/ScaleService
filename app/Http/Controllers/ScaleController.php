@@ -194,4 +194,63 @@ class ScaleController extends Controller
         $scale->delete();
         return \Response::json(['status' => 'ok', 'msg' => '刪除成功']);
     }
+    public function getAnalysis(Request $request,Scale $Scale){
+        $scaleid = $Scale->id;
+        $dimensions = DB::table('questions')->select('dimensions.name')->join('dimensions','dimensions.id','=','questions.dimension')->where('dimensions.scaleid',$scaleid)->groupBy('dimensions.name')->get()->toarray();
+        //comparsion qid對到各構面
+        $questions = DB::table('scales')->select('dimensions.name as dname','questions.id as qid')->join('dimensions','scales.id','=','dimensions.scaleid')->join('questions','questions.dimension','=','dimensions.id')->where('scales.id',$scaleid)->orderBy('questions.id')->get()->toarray();
+        $comparison = array();
+        foreach ($questions as $key => $value) {
+            $comparison[$value->qid] = $value->dname;
+        }
+        //開始比對組成
+        $data = array();
+        foreach ($dimensions as $key => $value) {
+            $data['dimension'][$value->name] = array();
+            $data['avg'][$value->name] = 0;
+        }
+        //total平均及標準差
+        $data['dimension']['total'] = array();
+        $data['avg']['total'] = 0;
+
+        $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->get();
+        foreach ($responses as $key => $value) {
+            // print_r($value->response);
+            $tmp =jsonResponseTransfer($value->response);
+            foreach ($tmp as $tkey => $tvalue) {
+                // print_r($data['dimension'][$comparison[$tkey]]);
+                // print_r($tvalue);
+                array_push($data['dimension'][$comparison[$tkey]],$tvalue);
+                array_push($data['dimension']['total'],$tvalue);
+            }
+        }
+        foreach ($data['dimension'] as $key => $value) {
+            $data['avg'][$key] = array_sum($data['dimension'][$key])/count($data['dimension'][$key]);
+            // $data['dimension'][$key] = standard_deviation($data['dimension'][$key]);
+        }
+        print_r($data['dimension']);
+
+
+        // $X = $data['dimension']['delectus'];
+        // $Y = $data['dimension']['officia'];
+        // $Si = array();
+        // $Sij = array();
+        // foreach ($data['dimension'] as $key => $value) {
+        //     foreach ($data['dimension'] as $inkey => $invalue) {
+        //         if($key==$inkey)
+        //             array_push($Si, getcovar($value,$value));
+        //         else{
+        //             print_r(getcovar($value,$invalue));
+        //             // array_push($Sij, getcovar($value,$invalue));
+        //         }
+        //     }
+        //     // print_r(."\n");
+        // }
+        // print_r($Si);
+
+
+        // array_push($result, $data);
+        // $scale->delete();
+        return \Response::json("ok");
+    }
 }
