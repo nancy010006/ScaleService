@@ -198,37 +198,53 @@ class ScaleController extends Controller
         $scaleid = $Scale->id;
         $dimensions = DB::table('questions')->select('dimensions.name')->join('dimensions','dimensions.id','=','questions.dimension')->where('dimensions.scaleid',$scaleid)->groupBy('dimensions.name')->get()->toarray();
         //comparsion qid對到各構面
-        $questions = DB::table('scales')->select('dimensions.name as dname','questions.id as qid')->join('dimensions','scales.id','=','dimensions.scaleid')->join('questions','questions.dimension','=','dimensions.id')->where('scales.id',$scaleid)->orderBy('questions.id')->get()->toarray();
+        $questions = DB::table('scales')->select('questions.description as qname','questions.id as qid','dimensions.name as dname')->join('dimensions','scales.id','=','dimensions.scaleid')->join('questions','questions.dimension','=','dimensions.id')->where('scales.id',$scaleid)->orderBy('questions.id')->get()->toarray();
         $comparison = array();
+        // print_r($questions);
         foreach ($questions as $key => $value) {
-            $comparison[$value->qid] = $value->dname;
+            $comparison[$value->qid] = $value->dname."*".$value->qname;
         }
         //開始比對組成
         $data = array();
-        foreach ($dimensions as $key => $value) {
-            $data['dimension'][$value->name] = array();
-            $data['avg'][$value->name] = 0;
+        foreach ($comparison as $key => $value) {
+            // $data['dimension'][$value->name] = array();
+            // print_r($value);
+            $data['question'][$value] = array();
         }
+        // print_r($comparison);
         //total平均及標準差
-        $data['dimension']['total'] = array();
-        $data['avg']['total'] = 0;
+        // $data['dimension']['total'] = array();
+        // $data['avg']['total'] = 0;
 
         $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->get();
         foreach ($responses as $key => $value) {
             // print_r($value->response);
             $tmp =jsonResponseTransfer($value->response);
+            // print_r($tmp);
             foreach ($tmp as $tkey => $tvalue) {
                 // print_r($data['dimension'][$comparison[$tkey]]);
                 // print_r($tvalue);
-                array_push($data['dimension'][$comparison[$tkey]],$tvalue);
-                array_push($data['dimension']['total'],$tvalue);
+                array_push($data['question'][$comparison[$tkey]],$tvalue);
+                // array_push($data['dimension']['total'],$tvalue);
             }
         }
-        foreach ($data['dimension'] as $key => $value) {
-            $data['avg'][$key] = array_sum($data['dimension'][$key])/count($data['dimension'][$key]);
-            // $data['dimension'][$key] = standard_deviation($data['dimension'][$key]);
+        $result = array();
+        ksort($data['question']);
+        foreach ($data['question'] as $key => $value) {
+            $dim = explode('*', $key)[0];
+            $ques = explode('*', $key)[1];
+            // $result[$dim];
+            $result[$dim][$ques]=array();
+            $tmp=array();
+            foreach ($data['question'] as $innerkey => $innervalue) {
+                array_push($tmp, round(getcorr($value,$innervalue),2));
+            }
+            $result[$dim][$ques]=$tmp;
         }
-        print_r($data['dimension']);
+        // foreach ($data['dimension'] as $key => $value) {
+            // $data['avg'][$key] = array_sum($data['dimension'][$key])/count($data['dimension'][$key]);
+            // $data['dimension'][$key] = standard_deviation($data['dimension'][$key]);
+        // }
 
 
         // $X = $data['dimension']['delectus'];
@@ -251,6 +267,6 @@ class ScaleController extends Controller
 
         // array_push($result, $data);
         // $scale->delete();
-        return \Response::json("ok");
+        return \Response::json(["corr"=>$result]);
     }
 }
