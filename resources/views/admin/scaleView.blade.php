@@ -52,7 +52,7 @@
             addBasic();
             addToTable();
             $("#table").dataTable({
-                scrollY:'800px',
+                scrollY:screen.height,
                 scrollX:        true,
                 scrollCollapse: true,
                 paging:         false,
@@ -98,6 +98,7 @@
         }
         function addBasic(){
             $("#halfReliablity").html(scale.analysis.halfReliablity);
+            $("#alpha").html(scale.analysis.alpha);
         }
         function addToTable(){
             var compare = [];
@@ -204,7 +205,14 @@
                             </div>
                             <div class="panel-body">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
+                                            <div class="form-group">
+                                                <label>Cronbach &#945</label>
+                                                <p id="alpha">
+                                                </p>
+                                            </div>
+                                    </div>
+                                    <div class="col-lg-3">
                                             <div class="form-group">
                                                 <label>折半信度</label>
                                                 <p id="halfReliablity">

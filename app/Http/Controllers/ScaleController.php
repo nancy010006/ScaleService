@@ -7,11 +7,11 @@ use Illuminate\Http\Request;
 use App\Scale;
 use App\Dimension;
 use App\Question;
+use App\CronbachAlpha;
 
 class ScaleController extends Controller
 {
     public function index(){
-
     	return view('scale.index');
     }
     public function getData(){
@@ -203,10 +203,13 @@ class ScaleController extends Controller
         foreach ($questions as $key => $value) {
             $comparison[$value->qid] = $value->dname."*".$value->qname;
         }
+        //cronbach alpha 使用之變數宣告 待會使用折半信度內的tmp資料計算
+        $alphaarray = array();
         //開始比對組成
         $data = array();
         foreach ($comparison as $key => $value) {
             $data['question'][$value] = array();
+            $alphaarray[$key] = array();
         }
         $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->get();
         foreach ($responses as $key => $value) {
@@ -220,7 +223,6 @@ class ScaleController extends Controller
         foreach ($data['question'] as $key => $value) {
             $dim = explode('*', $key)[0];
             $ques = explode('*', $key)[1];
-            // $corr[$dim];
             $corr[$dim][$ques]=array();
             $tmp=array();
             foreach ($data['question'] as $innerkey => $innervalue) {
@@ -228,6 +230,7 @@ class ScaleController extends Controller
             }
             $corr[$dim][$ques]=$tmp;
         }
+
 
         //算折半信度
         $odd = array();
@@ -241,11 +244,20 @@ class ScaleController extends Controller
         }
         foreach ($responses as $key => $value) {
             $tmp = jsonResponseTransfer($value->response);
+
+            //算cronbach alpha
+
+            // print_r($tmp);
+            foreach ($tmp as $qid => $score) {
+                array_push($alphaarray[$qid], $score);
+            }
+
+            //end cronbach alpha
+
             $data = array();
             $data["odd"] = 0;
             $data["even"] = 0;
             $count = 0;
-            // print_r($tmp);
             //innerkey 題號
             //innervalue 分數
             foreach ($tmp as $innerkey => $innervalue) {
@@ -257,33 +269,20 @@ class ScaleController extends Controller
             array_push($odd, $data["odd"]);
             array_push($even, $data["even"]);
         }
-        $halfReliablity = round(getcorr($odd,$even),2);
-        // foreach ($data['dimension'] as $key => $value) {
-            // $data['avg'][$key] = array_sum($data['dimension'][$key])/count($data['dimension'][$key]);
-            // $data['dimension'][$key] = standard_deviation($data['dimension'][$key]);
-        // }
+        //折半信度結果
+        $halfReliablity = round(getcorr($odd,$even),4);
 
+        //因為key值混亂 算不出cronbach alpha 重新設定key值
+        $new_key=0;
+        foreach($alphaarray as $key => $val){
+            $alphaarray[$new_key++] = $val;
+            unset($alphaarray[$key]);
+        }
+        //算cronbach alpha
+        $ca=new CronbachAlpha();
+        $ca->LoadData($alphaarray);
+        $alpha=round($ca->CalculateCronbachAlpha(),4);
 
-        // $X = $data['dimension']['delectus'];
-        // $Y = $data['dimension']['officia'];
-        // $Si = array();
-        // $Sij = array();
-        // foreach ($data['dimension'] as $key => $value) {
-        //     foreach ($data['dimension'] as $inkey => $invalue) {
-        //         if($key==$inkey)
-        //             array_push($Si, getcovar($value,$value));
-        //         else{
-        //             print_r(getcovar($value,$invalue));
-        //             // array_push($Sij, getcovar($value,$invalue));
-        //         }
-        //     }
-        //     // print_r(."\n");
-        // }
-        // print_r($Si);
-
-
-        // array_push($corr, $data);
-        // $scale->delete();
-        return \Response::json(["corr"=>$corr,"halfReliablity"=>$halfReliablity]);
+        return \Response::json(["halfReliablity"=>$halfReliablity,"alpha"=>$alpha,"corr"=>$corr]);
     }
 }
