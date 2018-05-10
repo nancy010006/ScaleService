@@ -49,7 +49,7 @@
         var scale = {};
         $(document).ready(function(){
             initial();
-            console.log(scale);
+            addBasic();
             addToTable();
             $("#table").dataTable({
                 scrollY:'800px',
@@ -91,11 +91,13 @@
                 url:'{{url("")}}/api/getAnalysis/'+scaleid,
                 async:false,
                 success:function(r){
-                    console.error(r);
                     result = r;
                 }
             })
             return result;
+        }
+        function addBasic(){
+            $("#halfReliablity").html(scale.analysis.halfReliablity);
         }
         function addToTable(){
             var compare = [];
@@ -117,7 +119,6 @@
                 $.each(val,function(innerindex,innerval){
                     var td='';
                     var col = 1;
-                    console.log(test);
 
                     // 相關係數全部秀出來
                     $.each(innerval,function(innerindex2,innerval2){
@@ -149,7 +150,7 @@
                 })
                 // console.log(val);
             })
-            // interupt.reverse();
+            interupt.reverse();
             var total = 0;
             $.each(interupt,function(index,val){
                 total+=val;
@@ -197,6 +198,21 @@
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <label>分析資料</label>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label>折半信度</label>
+                                                <p id="halfReliablity">
+                                                </p>
+                                            </div>
+                                    </div>
+                            </div>
+                        </div>
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <label>相關係數矩陣</label>

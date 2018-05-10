@@ -200,47 +200,64 @@ class ScaleController extends Controller
         //comparsion qid對到各構面
         $questions = DB::table('scales')->select('questions.description as qname','questions.id as qid','dimensions.name as dname')->join('dimensions','scales.id','=','dimensions.scaleid')->join('questions','questions.dimension','=','dimensions.id')->where('scales.id',$scaleid)->orderBy('questions.id')->get()->toarray();
         $comparison = array();
-        // print_r($questions);
         foreach ($questions as $key => $value) {
             $comparison[$value->qid] = $value->dname."*".$value->qname;
         }
         //開始比對組成
         $data = array();
         foreach ($comparison as $key => $value) {
-            // $data['dimension'][$value->name] = array();
-            // print_r($value);
             $data['question'][$value] = array();
         }
-        // print_r($comparison);
-        //total平均及標準差
-        // $data['dimension']['total'] = array();
-        // $data['avg']['total'] = 0;
-
         $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->get();
         foreach ($responses as $key => $value) {
-            // print_r($value->response);
             $tmp =jsonResponseTransfer($value->response);
-            // print_r($tmp);
             foreach ($tmp as $tkey => $tvalue) {
-                // print_r($data['dimension'][$comparison[$tkey]]);
-                // print_r($tvalue);
                 array_push($data['question'][$comparison[$tkey]],$tvalue);
-                // array_push($data['dimension']['total'],$tvalue);
             }
         }
-        $result = array();
+        $corr = array();
         ksort($data['question']);
         foreach ($data['question'] as $key => $value) {
             $dim = explode('*', $key)[0];
             $ques = explode('*', $key)[1];
-            // $result[$dim];
-            $result[$dim][$ques]=array();
+            // $corr[$dim];
+            $corr[$dim][$ques]=array();
             $tmp=array();
             foreach ($data['question'] as $innerkey => $innervalue) {
                 array_push($tmp, round(getcorr($value,$innervalue),2));
             }
-            $result[$dim][$ques]=$tmp;
+            $corr[$dim][$ques]=$tmp;
         }
+
+        //算折半信度
+        $odd = array();
+        $even = array();
+        $comparison = array();
+        foreach ($questions as $key => $value) {
+            if($key%2==0)
+                $comparison[$value->qid]="odd";
+            else
+                $comparison[$value->qid]="even";
+        }
+        foreach ($responses as $key => $value) {
+            $tmp = jsonResponseTransfer($value->response);
+            $data = array();
+            $data["odd"] = 0;
+            $data["even"] = 0;
+            $count = 0;
+            // print_r($tmp);
+            //innerkey 題號
+            //innervalue 分數
+            foreach ($tmp as $innerkey => $innervalue) {
+                $data[$comparison[$innerkey]]+=$innervalue;
+                $count++;
+            }
+            $data["odd"]/=$count;
+            $data["even"]/=$count;
+            array_push($odd, $data["odd"]);
+            array_push($even, $data["even"]);
+        }
+        $halfReliablity = round(getcorr($odd,$even),2);
         // foreach ($data['dimension'] as $key => $value) {
             // $data['avg'][$key] = array_sum($data['dimension'][$key])/count($data['dimension'][$key]);
             // $data['dimension'][$key] = standard_deviation($data['dimension'][$key]);
@@ -265,8 +282,8 @@ class ScaleController extends Controller
         // print_r($Si);
 
 
-        // array_push($result, $data);
+        // array_push($corr, $data);
         // $scale->delete();
-        return \Response::json(["corr"=>$result]);
+        return \Response::json(["corr"=>$corr,"halfReliablity"=>$halfReliablity]);
     }
 }
