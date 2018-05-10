@@ -2,7 +2,9 @@
 
 @section("css")
     <!-- DataTables Responsive CSS -->
-    <link href="{{url('')}}/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet">
+    <!-- <link href="{{url('')}}/vendor/datatables-responsive/dataTables.responsive.css" rel="stylesheet"> -->
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/fixedcolumns/3.2.4/css/fixedColumns.dataTables.min.css" rel="stylesheet">
 
     <!-- Social Buttons CSS -->
     <link href="{{url('')}}/vendor/bootstrap-social/bootstrap-social.css" rel="stylesheet">
@@ -12,11 +14,26 @@
             text-align: right;
             min-width: 100px;
         }
+        .color1{
+            background-color: #00DCFFFF;
+        }
+        .color2{
+            background-color: #00FFA5FF;
+        }
+        .color3{
+            background-color: #EBFF00FF;
+        }
+        .color4{
+            background-color: #FFB900FF;
+        }
+        .color5{
+            background-color: #FF0073FF;
+        }
+        .color6{
+            background-color: #CF00FFFF;
+        }
         .same{
             background-color: pink;
-        }
-        div{
-            scrollbar-hightlight-color:pink;
         }
     </style>
 @endsection
@@ -24,6 +41,7 @@
 @section("js")
 <!-- DataTables JavaScript -->
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
     <script src="{{url('')}}/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
     <script src="{{url('')}}/vendor/datatables-responsive/dataTables.responsive.js"></script>
     <script src="{{url('')}}/js/jquery.floatingscroll.min.js"></script>
@@ -33,7 +51,19 @@
             initial();
             console.log(scale);
             addToTable();
-            $(".table-responsive").floatingScroll();
+            $("#table").dataTable({
+                scrollY:'800px',
+                scrollX:        true,
+                scrollCollapse: true,
+                paging:         false,
+                fixedColumns:   {
+                    leftColumns: 1,
+                },
+                ordering: false,
+                info:     false,
+                searching:false
+            });
+            // $(".table-responsive").floatingScroll();
         })
         function initial(){
             scale.basic = getScaleData();
@@ -73,32 +103,71 @@
             var count = 1;
             var interupt = [];
             var colcount =1;
+            var row = 1;
+            var test = 1;
             $.each(scale.analysis.corr,function(index,val){
-                console.log(index);
+                // console.log(index);
                 var count = 1;
                 $.each(val,function(innerindex,innerval){
                     $("#thead tr").append('<th>'+index+(count++)+'</th>');
                 })
                 interupt.push(count-1);
+
                 var count = 1;
-                // console.log(val);
                 $.each(val,function(innerindex,innerval){
                     var td='';
-                    var rowcount = 1 ;
+                    var col = 1;
+                    console.log(test);
+
+                    // 相關係數全部秀出來
                     $.each(innerval,function(innerindex2,innerval2){
-                        // console.log(innerval);
                         if(innerval2!=1)
-                            td+='<td>'+innerval2+'</td>';
+                            td+='<td id="'+col+','+row+'">'+innerval2+'</td>';
                         else
-                            td+='<td class="same">'+innerval2+'</td>';
+                            td+='<td id="'+col+','+row+'" class="same">'+innerval2+'</td>';
+                        col++;
                     })
-                    $("#tbody").append('<tr><th>'+index+(count++)+'</th>'+td+'</tr>');
-                    colcount++;
+
+                    //相關係數只秀一半
+                    // for (var i = 0; i < test; i++) {
+                    //     if(innerval[i]!=1)
+                    //         td+='<td id="'+col+','+row+'">'+innerval[i]+'</td>';
+                    //     else
+                    //         td+='<td id="'+col+','+row+'" class="same">'+innerval[i]+'</td>';
+                    //     col++;
+                    // }
+                    // for (var i = 56; i > test; i--) {
+                    //     if(innerval[i]!=1)
+                    //         td+='<td id="'+col+','+row+'"></td>';
+                    //     else
+                    //         td+='<td id="'+col+','+row+'" class="same"></td>';
+                    //     col++;
+                    // }
+                    $("#tbody").append('<tr><th class="headcol">'+index+(count++)+'</th>'+td+'</tr>');
+                    row++;
+                    test++;
                 })
                 // console.log(val);
             })
             // interupt.reverse();
-            // console.log(interupt);
+            var total = 0;
+            $.each(interupt,function(index,val){
+                total+=val;
+            })
+            var colorcount = 1;
+            $.each(interupt,function(index,val){
+                $.each($('#tbody td'),function(innerindex,innerval){
+                    var x = this.id.split(',')[0];
+                    var y = this.id.split(',')[1];
+                    if(x<=total&&y<=total){
+                        $(this).addClass('color'+colorcount);
+                    }
+
+                    // if(x)
+                })
+                total-=val;
+                colorcount++;
+            })
             // console.log(colcount-1);
             // var colorcount = 1;
             // $.each($("td"),function(index,val){
@@ -137,7 +206,7 @@
                                     <!-- /.panel-heading -->
                                     <div class="panel-body">
                                         <div class="table-responsive">
-                                            <table class="table table-striped table-bordered table-hover">
+                                            <table id="table" class="table table-striped table-bordered table-hover">
                                                 <thead id="thead">
                                                     <tr>
                                                         <th>#</th>
