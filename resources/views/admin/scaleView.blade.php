@@ -35,6 +35,22 @@
         .same{
             background-color: pink;
         }
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-bottom: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+            text-align: center;
+            padding: 30px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 @endsection
 
@@ -65,7 +81,17 @@
             });
             // $(".table-responsive").floatingScroll();
         })
+        function loadingEffect() {
+            var loading = $('.loader');
+            loading.hide();
+            $(document).ajaxStart(function () {
+                loading.show();
+            }).ajaxStop(function () {
+                loading.hide();
+            });
+        }
         function initial(){
+            loadingEffect();
             scale.basic = getScaleData();
             scale.analysis = getScaleAnalysis();
         }
@@ -193,6 +219,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">量表詳細內容</h1>
+                        <div class="loader">分析中</div>
                     </div>
                     <!-- /.col-lg-12 -->
                 </div>
