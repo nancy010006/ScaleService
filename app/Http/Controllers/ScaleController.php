@@ -195,7 +195,9 @@ class ScaleController extends Controller
         return \Response::json(['status' => 'ok', 'msg' => '刪除成功']);
     }
     public function getAnalysis(Request $request,Scale $Scale){
+        //取資料庫資料
         $scaleid = $Scale->id;
+        //此問卷有哪些構面
         $dimensions = DB::table('questions')->select('dimensions.name')->join('dimensions','dimensions.id','=','questions.dimension')->where('dimensions.scaleid',$scaleid)->groupBy('dimensions.name')->get()->toarray();
         //comparsion qid對到各構面
         $questions = DB::table('scales')->select('questions.description as qname','questions.id as qid','dimensions.name as dname')->join('dimensions','scales.id','=','dimensions.scaleid')->join('questions','questions.dimension','=','dimensions.id')->where('scales.id',$scaleid)->orderBy('questions.id')->get()->toarray();
@@ -203,13 +205,15 @@ class ScaleController extends Controller
         foreach ($questions as $key => $value) {
             $comparison[$value->qid] = $value->dname."*".$value->qname;
         }
+
         //cronbach alpha 使用之變數宣告 待會使用折半信度內的tmp資料計算
         $alphaarray = array();
-        //開始比對組成
+        
+
+        //構成MTMM矩陣
         $data = array();
         foreach ($comparison as $key => $value) {
             $data['question'][$value] = array();
-            $alphaarray[$key] = array();
         }
         $responses = DB::table('responses')->select('response')->where('scaleid',$scaleid)->get();
         foreach ($responses as $key => $value) {
@@ -220,8 +224,19 @@ class ScaleController extends Controller
         }
         $corr = array();
         ksort($data['question']);
+        //構成矩陣同時順便計算各構面題目數量 dimcountArr為各構面題目數量
+        $dimcountArr = array();
+        $olddim = explode('*',key($data['question']))[0];
+        $dimcount=0;
         foreach ($data['question'] as $key => $value) {
             $dim = explode('*', $key)[0];
+            if($dim==$olddim)
+                $dimcount++;
+            else{
+                $dimcountArr[$olddim] = $dimcount;
+                $dimcount=1;
+            }
+            $olddim = $dim;
             $ques = explode('*', $key)[1];
             $corr[$dim][$ques]=array();
             $tmp=array();
@@ -230,8 +245,7 @@ class ScaleController extends Controller
             }
             $corr[$dim][$ques]=$tmp;
         }
-
-
+        $dimcountArr[$olddim] = $dimcount;
         //算折半信度
         $odd = array();
         $even = array();
@@ -246,11 +260,9 @@ class ScaleController extends Controller
             $tmp = jsonResponseTransfer($value->response);
 
             //算cronbach alpha
-
             // print_r($tmp);
-            foreach ($tmp as $qid => $score) {
-                array_push($alphaarray[$qid], $score);
-            }
+            // print_r($tmp);
+            array_push($alphaarray, $tmp);
 
             //end cronbach alpha
 
@@ -271,17 +283,22 @@ class ScaleController extends Controller
         }
         //折半信度結果
         $halfReliablity = round(getcorr($odd,$even),4);
-
         //因為key值混亂 算不出cronbach alpha 重新設定key值
-        $new_key=0;
         foreach($alphaarray as $key => $val){
-            $alphaarray[$new_key++] = $val;
-            unset($alphaarray[$key]);
+            $new_key=0;
+            ksort($alphaarray[$key]);
+            foreach ($alphaarray[$key] as $innerkey => $innervalue) {
+                $alphaarray[$key][$new_key++] = $innervalue;
+                // print_r($innerkey."to ->".$new_key."\n");
+                unset($alphaarray[$key][$innerkey]);
+            }
         }
+        // print_r($alphaarray);
         //算cronbach alpha
         $ca=new CronbachAlpha();
         $ca->LoadData($alphaarray);
         $alpha=round($ca->CalculateCronbachAlpha(),4);
+        // $alpha =1 ;
 
         return \Response::json(["halfReliablity"=>$halfReliablity,"alpha"=>$alpha,"corr"=>$corr]);
     }
