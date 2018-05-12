@@ -171,7 +171,7 @@
             var interupt = [];
             var colcount =1;
             var row = 1;
-            var test = 1;
+            var end =1;
             $.each(scale.analysis.corr,function(index,val){
                 var count = 1;
                 $.each(val,function(innerindex,innerval){
@@ -181,36 +181,32 @@
 
                 var count = 1;
                 $.each(val,function(innerindex,innerval){
+
+                    var size = Object.keys(innerval).length;
+                    var stop = Object.keys(innerval).length-end;
+                    
+                    // 相關係數全部秀出來
                     var td='';
                     var col = 1;
-
-                    // 相關係數全部秀出來
                     $.each(innerval,function(innerindex2,innerval2){
+                        if(stop>=size)
+                            return
                         if(innerval2!=1)
                             td+='<td id="'+col+','+row+'">'+innerval2+'</td>';
                         else
                             td+='<td id="'+col+','+row+'" class="same">'+innerval2+'</td>';
                         col++;
+                        stop++;
                     })
+                    for (var i = 0; i < size-end; i++) {
+                        td+='<td id="'+col+','+row+'"></td>';
+                        col++;
+                    }
 
-                    //相關係數只秀一半
-                    // for (var i = 0; i < test; i++) {
-                    //     if(innerval[i]!=1)
-                    //         td+='<td id="'+col+','+row+'">'+innerval[i]+'</td>';
-                    //     else
-                    //         td+='<td id="'+col+','+row+'" class="same">'+innerval[i]+'</td>';
-                    //     col++;
-                    // }
-                    // for (var i = 56; i > test; i--) {
-                    //     if(innerval[i]!=1)
-                    //         td+='<td id="'+col+','+row+'"></td>';
-                    //     else
-                    //         td+='<td id="'+col+','+row+'" class="same"></td>';
-                    //     col++;
-                    // }
+                    end++;
+
                     $("#tbody").append('<tr><th class="headcol" data-placement="left"  data-toggle="popover" title="題目敘述" data-trigger="hover" data-content="'+innerindex+'">'+index+(count++)+'</th>'+td+'</tr>');
                     row++;
-                    test++;
                 })
             })
             interupt.reverse();
