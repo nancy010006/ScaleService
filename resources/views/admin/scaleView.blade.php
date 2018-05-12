@@ -15,25 +15,31 @@
             min-width: 100px;
         }
         .color1{
-            background-color: #00DCFFFF;
+            background-color: #FF837D;
         }
         .color2{
-            background-color: #00FFA5FF;
+            background-color: #7497BB;
         }
         .color3{
-            background-color: #EBFF00FF;
+            background-color: #ACDC9D;
         }
         .color4{
-            background-color: #FFB900FF;
+            background-color: #EED19C;
         }
         .color5{
-            background-color: #FF0073FF;
+            background-color: #EFB28C;
         }
         .color6{
-            background-color: #CF00FFFF;
+            background-color: #E8837E;
+        }
+        .color7{
+            background-color: #7497BB;
+        }
+        .color8{
+            background-color: #ACDC9D;
         }
         .same{
-            background-color: pink;
+            background-color: #FFFC70;
         }
         .loader {
             border: 16px solid #f3f3f3; /* Light grey */
@@ -61,6 +67,7 @@
     <script src="{{url('')}}/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
     <script src="{{url('')}}/vendor/datatables-responsive/dataTables.responsive.js"></script>
     <script src="{{url('')}}/js/jquery.floatingscroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script type="text/javascript">
         var scale = {};
         $(document).ready(function(){
@@ -68,7 +75,7 @@
             addBasic();
             addToTable();
             $("#table").dataTable({
-                scrollY:screen.height,
+                scrollY:document.documentElement.clientHeight-100+'px',
                 scrollX:        true,
                 scrollCollapse: true,
                 paging:         false,
@@ -79,6 +86,11 @@
                 info:     false,
                 searching:false
             });
+            $(function () {
+              $('[data-toggle="popover"]').popover({
+                container: 'body'
+              })
+            })
             // $(".table-responsive").floatingScroll();
         })
         function loadingEffect() {
@@ -123,8 +135,9 @@
             return result;
         }
         function addBasic(){
-            $("#halfReliablity").html(scale.analysis.halfReliablity);
-            $("#alpha").html(scale.analysis.alpha);
+            $('#halfReliablity').html(scale.analysis.halfReliablity);
+            $('#alpha').html(scale.analysis.alpha);
+            $('#DiscriminantValidity').html(scale.analysis.DiscriminantValidity);
         }
         function addToTable(){
             var compare = [];
@@ -137,8 +150,9 @@
             $.each(scale.analysis.corr,function(index,val){
                 // console.log(index);
                 var count = 1;
+                // <td data-placement="top"  data-toggle="popover" title="Popover title" data-content="test">12</td>
                 $.each(val,function(innerindex,innerval){
-                    $("#thead tr").append('<th>'+index+(count++)+'</th>');
+                    $("#thead tr").append('<th data-placement="top"  data-toggle="popover" title="題目敘述" data-trigger="hover" data-content="'+innerindex+'">'+index+(count++)+'</th>');
                 })
                 interupt.push(count-1);
 
@@ -171,11 +185,10 @@
                     //         td+='<td id="'+col+','+row+'" class="same"></td>';
                     //     col++;
                     // }
-                    $("#tbody").append('<tr><th class="headcol">'+index+(count++)+'</th>'+td+'</tr>');
+                    $("#tbody").append('<tr><th class="headcol" data-placement="left"  data-toggle="popover" title="題目敘述" data-trigger="hover" data-content="'+innerindex+'">'+index+(count++)+'</th>'+td+'</tr>');
                     row++;
                     test++;
                 })
-                // console.log(val);
             })
             interupt.reverse();
             var total = 0;
@@ -191,95 +204,95 @@
                         $(this).addClass('color'+colorcount);
                     }
 
-                    // if(x)
                 })
                 total-=val;
                 colorcount++;
             })
-            // console.log(colcount-1);
-            // var colorcount = 1;
-            // $.each($("td"),function(index,val){
-            //     x = val.id.split(',')[0];
-            //     y = val.id.split(',')[1];
-            //     $.each(interupt,function(innerindex,innerval){
-            //         if(x<=colcount-innerval&&y<=colcount-innerval){
-            //             // $(this).attr('class','color');
-            //         }    
-            //     })
-            //     colorcount++;
-            // })
         }
     </script>
 @endsection
 
 @section("page-wrapper")
 <div id="page-wrapper">
-            <form role="form" id="scaleform">
-                @csrf
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h1 class="page-header">量表詳細內容</h1>
-                        <div class="loader">分析中</div>
+    <td id="test" data-placement="top"  data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</td>
+    <form role="form" id="scaleform">
+        @csrf
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">量表詳細內容</h1>
+                <div class="loader">分析中</div>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <label>分析資料</label>
                     </div>
-                    <!-- /.col-lg-12 -->
-                </div>
-                <!-- /.row -->
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <label>分析資料</label>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <label>Cronbach &#945</label>
-                                                <p id="alpha">
-                                                </p>
-                                            </div>
-                                    </div>
-                                    <div class="col-lg-3">
-                                            <div class="form-group">
-                                                <label>折半信度</label>
-                                                <p id="halfReliablity">
-                                                </p>
-                                            </div>
-                                    </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <label>相關係數矩陣</label>
-                            </div>
-                            <div class="panel-body">
-                                <div class="row">
-                                    <!-- /.panel-heading -->
-                                    <div class="panel-body">
-                                        <div class="table-responsive">
-                                            <table id="table" class="table table-striped table-bordered table-hover">
-                                                <thead id="thead">
-                                                    <tr>
-                                                        <th>#</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="tbody">
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- /.table-responsive -->
-                                    </div>
-                                    <!-- /.panel-body -->
-                                    <!-- /.panel -->
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>Cronbach &#945</label>
+                                    <p id="alpha">
+                                    </p>
                                 </div>
-                                <!-- /.row (nested) -->
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>折半信度</label>
+                                    <p id="halfReliablity">
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>區別效度</label>
+                                    <p id="DiscriminantValidity">
+                                    </p>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <label>相關係數矩陣</label>
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <!-- /.panel-heading -->
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table id="table" class="table table-striped table-bordered table-hover">
+                                        <thead id="thead">
+                                            <tr>
+                                                <th>#</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.table-responsive -->
                             </div>
                             <!-- /.panel-body -->
+                            <!-- /.panel -->
                         </div>
-                        <!-- /.panel -->
+                        <!-- /.row (nested) -->
                     </div>
-                    <!-- /.col-lg-12 -->
+                    <!-- /.panel-body -->
                 </div>
-            </form>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
         </div>
+    </form>
+</div>
 @endsection
