@@ -246,6 +246,8 @@ class ScaleController extends Controller
             $corr[$dim][$ques]=$tmp;
         }
         $dimcountArr[$olddim] = $dimcount;
+
+
         //算折半信度
         $odd = array();
         $even = array();
@@ -259,9 +261,7 @@ class ScaleController extends Controller
         foreach ($responses as $key => $value) {
             $tmp = jsonResponseTransfer($value->response);
 
-            //算cronbach alpha
-            // print_r($tmp);
-            // print_r($tmp);
+            //cronbach alpha用
             array_push($alphaarray, $tmp);
 
             //end cronbach alpha
@@ -293,13 +293,43 @@ class ScaleController extends Controller
                 unset($alphaarray[$key][$innerkey]);
             }
         }
-        // print_r($alphaarray);
+
         //算cronbach alpha
         $ca=new CronbachAlpha();
         $ca->LoadData($alphaarray);
         $alpha=round($ca->CalculateCronbachAlpha(),4);
-        // $alpha =1 ;
 
-        return \Response::json(["halfReliablity"=>$halfReliablity,"alpha"=>$alpha,"corr"=>$corr]);
+        //區別效度 使用corr矩陣輔助及dimcountArr各構面題數輔助
+        
+        //totalQuestion = 總題數
+        $totalQuestion = 0;
+        foreach ($dimcountArr as $key => $value) {
+            $totalQuestion+=$value;
+        }
+        //上下限
+        $max = 0;
+        $min = 0;
+        $now = 0;
+        // print_r($corr);
+        $rejectTime = 0;
+        $comparTime = 0;
+        foreach ($dimcountArr as $dim => $count) {
+            $min = $max;
+            $max += $count;
+            foreach ($corr[$dim] as $question => $eachCorr) {
+                for ($i=0; $i <$totalQuestion ; $i++) { 
+                    if(!($i>=$min&&$i<$max)){
+                        // print_r($eachCorr[$now]."   ".$eachCorr[$i]."\n");
+                        if($eachCorr[$now]<$eachCorr[$i])
+                            $rejectTime++;
+                        $comparTime++;
+                    }
+                }
+                // print_r($tmp."\n\n\n");
+            }
+            // print_r($min."  ".$max."\n");
+        }
+        $DiscriminantValidity = round($rejectTime/$comparTime,4);
+        return \Response::json(["halfReliablity"=>$halfReliablity,"alpha"=>$alpha,"DiscriminantValidity"=>$DiscriminantValidity,"corr"=>$corr]);
     }
 }
