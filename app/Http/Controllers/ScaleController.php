@@ -299,6 +299,9 @@ class ScaleController extends Controller
         $ca->LoadData($alphaarray);
         $alpha=round($ca->CalculateCronbachAlpha(),4);
 
+        //收斂效度回傳陣列宣告
+        $MinVality=array();
+
         //區別效度 使用corr矩陣輔助及dimcountArr各構面題數輔助
         
         //totalQuestion = 總題數
@@ -310,29 +313,56 @@ class ScaleController extends Controller
         $max = 0;
         $min = 0;
         $now = 1;
-        // print_r($corr);
         $rejectTime = 0;
         $comparTime = 0;
+        $test = 0;
         foreach ($dimcountArr as $dim => $count) {
             $min = $max;
             $max += $count;
             foreach ($corr[$dim] as $question => $eachCorr) {
-                // print_r($dim);
                 for ($i=$now++; $i <$totalQuestion ; $i++) { 
-                    for ($j=0; $j <$totalQuestion ; $j++) { 
+                    for ($j=$now; $j <$totalQuestion ; $j++) { 
                         if(!($j>=$min&&$j<$max)){
-                            // print_r($eachCorr[$i]."   ".$eachCorr[$j]."\n");
                             if($eachCorr[$i]<$eachCorr[$j])
                                 $rejectTime++;
                             $comparTime++;
                         }
                     }
                 }
-                // print_r($tmp."\n\n\n");
             }
-            // print_r($min."  ".$max."\n");
+
+            //算區別效度時順便算收斂效度 有點複雜註解不想寫了希望不會有維護這一段的一天感謝大家            
+            $limit=0;
+            $eachMinVality = 1;
+            foreach ($corr as $innerdim => $question) {
+                foreach ($question as $key => $everycorr) {
+                    if(($limit)>$max)
+                        break;
+                    for ($i=0; $i <$totalQuestion ; $i++) { 
+                        if($limit<$min){
+                            if($i>=$min&&$i<$max){
+                                // print_r($everycorr[$i]."\n");
+                                if($everycorr[$i]<$eachMinVality)
+                                    $eachMinVality = $everycorr[$i];
+                            }
+                        }
+                        else{
+                            if($i<$max){
+                                // print_r($everycorr[$i]."\n");
+                                if($everycorr[$i]<$eachMinVality)
+                                    $eachMinVality = $everycorr[$i];
+                            }
+                        }
+                    }
+                    $limit++;
+                }
+                if(($limit)>=$max)
+                    break;
+            }
+            $MinVality[$innerdim] = $eachMinVality;
+            // print_r("__________________________________".$innerdim.$eachMinVality."\n");
         }
         $DiscriminantValidity = round($rejectTime/$comparTime,4);
-        return \Response::json(["halfReliablity"=>$halfReliablity,"alpha"=>$alpha,"DiscriminantValidity"=>$DiscriminantValidity,"corr"=>$corr]);
+        return \Response::json(["halfReliablity"=>$halfReliablity,"alpha"=>$alpha,"DiscriminantValidity"=>$DiscriminantValidity,"MinVality"=>$MinVality,"corr"=>$corr]);
     }
 }
