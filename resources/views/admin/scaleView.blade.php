@@ -8,7 +8,7 @@
 
     <!-- Social Buttons CSS -->
     <link href="{{url('')}}/vendor/bootstrap-social/bootstrap-social.css" rel="stylesheet">
-    <link href="{{url('')}}/css/jquery.floatingscroll.css" rel="stylesheet">
+    {{-- <link href="{{url('')}}/css/jquery.floatingscroll.css" rel="stylesheet"> --}}
     <style type="text/css">
         td{
             text-align: right;
@@ -57,6 +57,11 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .worst{
+            /*color: red;*/
+            background-color: red;
+            font-weight: bold;  
+        }
     </style>
 @endsection
 
@@ -66,7 +71,7 @@
     <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
     <script src="{{url('')}}/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
     <script src="{{url('')}}/vendor/datatables-responsive/dataTables.responsive.js"></script>
-    <script src="{{url('')}}/js/jquery.floatingscroll.min.js"></script>
+    {{-- <script src="{{url('')}}/js/jquery.floatingscroll.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script type="text/javascript">
         var scale = {};
@@ -74,25 +79,17 @@
             initial();
             addBasic();
             addToTable();
-            $("#table").dataTable({
-                scrollY:document.documentElement.clientHeight-100+'px',
-                scrollX:        true,
-                scrollCollapse: true,
-                paging:         false,
-                fixedColumns:   {
-                    leftColumns: 1,
-                },
-                ordering: false,
-                info:     false,
-                searching:false
-            });
+            fixTableHeader();
+            setPopover();
+            setMinVailtyColor();
+        })
+        function setPopover(){
             $(function () {
               $('[data-toggle="popover"]').popover({
                 container: 'body'
               })
             })
-            // $(".table-responsive").floatingScroll();
-        })
+        }
         function loadingEffect() {
             var loading = $('.loader');
             loading.hide();
@@ -138,6 +135,34 @@
             $('#halfReliablity').html(scale.analysis.halfReliablity);
             $('#alpha').html(scale.analysis.alpha);
             $('#DiscriminantValidity').html(scale.analysis.DiscriminantValidity);
+            $.each(scale.analysis.MinVality,function(index,val){
+                $("#minValityArea").append('<li><strong>'+index+'</strong> : <span>'+val+'</span></li>');
+            })
+        }
+        function setMinVailtyColor(){
+            var size = Object.keys(scale.analysis.MinVality).length;
+            console.log(size);
+            $.each(scale.analysis.MinVality,function(index,val){
+                $.each($('td[name="team'+size+'"]'),function(innerindex,innerval){
+                    if($(this).text()==val)
+                        $(this).addClass('worst');
+                })
+                size--;
+            })
+        }
+        function fixTableHeader(){
+            $("#table").dataTable({
+                scrollY:document.documentElement.clientHeight-100+'px',
+                scrollX:        true,
+                scrollCollapse: true,
+                paging:         false,
+                fixedColumns:   {
+                    leftColumns: 1,
+                },
+                ordering: false,
+                info:     false,
+                searching:false
+            });
         }
         function addToTable(){
             var compare = [];
@@ -148,9 +173,7 @@
             var row = 1;
             var test = 1;
             $.each(scale.analysis.corr,function(index,val){
-                // console.log(index);
                 var count = 1;
-                // <td data-placement="top"  data-toggle="popover" title="Popover title" data-content="test">12</td>
                 $.each(val,function(innerindex,innerval){
                     $("#thead tr").append('<th data-placement="top"  data-toggle="popover" title="題目敘述" data-trigger="hover" data-content="'+innerindex+'">'+index+(count++)+'</th>');
                 })
@@ -202,6 +225,7 @@
                     var y = this.id.split(',')[1];
                     if(x<=total&&y<=total){
                         $(this).addClass('color'+colorcount);
+                        $(this).attr('name','team'+colorcount);
                     }
 
                 })
@@ -214,7 +238,6 @@
 
 @section("page-wrapper")
 <div id="page-wrapper">
-    <td id="test" data-placement="top"  data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</td>
     <form role="form" id="scaleform">
         @csrf
         <div class="row">
@@ -253,10 +276,20 @@
                                     </p>
                                 </div>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>收斂效度</label>
+                                    <ul id="minValityArea">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
             <!-- /.col-lg-12 -->
+            </div>
         </div>
         <!-- /.row -->
         <div class="row">
