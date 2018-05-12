@@ -309,7 +309,7 @@ class ScaleController extends Controller
         //上下限
         $max = 0;
         $min = 0;
-        $now = 0;
+        $now = 1;
         // print_r($corr);
         $rejectTime = 0;
         $comparTime = 0;
@@ -317,12 +317,15 @@ class ScaleController extends Controller
             $min = $max;
             $max += $count;
             foreach ($corr[$dim] as $question => $eachCorr) {
-                for ($i=0; $i <$totalQuestion ; $i++) { 
-                    if(!($i>=$min&&$i<$max)){
-                        // print_r($eachCorr[$now]."   ".$eachCorr[$i]."\n");
-                        if($eachCorr[$now]<$eachCorr[$i])
-                            $rejectTime++;
-                        $comparTime++;
+                // print_r($dim);
+                for ($i=$now++; $i <$totalQuestion ; $i++) { 
+                    for ($j=0; $j <$totalQuestion ; $j++) { 
+                        if(!($j>=$min&&$j<$max)){
+                            // print_r($eachCorr[$i]."   ".$eachCorr[$j]."\n");
+                            if($eachCorr[$i]<$eachCorr[$j])
+                                $rejectTime++;
+                            $comparTime++;
+                        }
                     }
                 }
                 // print_r($tmp."\n\n\n");
