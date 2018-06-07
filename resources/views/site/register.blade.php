@@ -72,7 +72,7 @@
               <div class="col-md-6">
               <label>地區</label>
                 <select name="area" class="form-control" required="">
-                    <option value=""></option>
+                    <option value="{{old('area')}}">{{old('area')}}</option>
                     <option value="北部">北部</option>
                     <option value="中部">中部</option>
                     <option value="南部">南部</option>
@@ -97,7 +97,7 @@
               <div class="col-md-6">
               <label>職業</label>
                 <select name="job" class="form-control" required="">
-                    <option value=""></option>
+                    <option value="{{old('job')}}">{{old('job')}}</option>
                     <option value="工">工</option>
                     <option value="商">商</option>
                     <option value="農">農</option>

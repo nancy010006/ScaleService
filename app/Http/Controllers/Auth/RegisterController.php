@@ -64,7 +64,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
+        // $this->middleware('guest');
     }
 
     /**
@@ -99,6 +99,7 @@ class RegisterController extends Controller
             'job' => $data['job'],
             'password' => Hash::make($data['password']),
             'api_token' => str_random(60),
+            'auth' => 0,
         ]);
     }
 }
