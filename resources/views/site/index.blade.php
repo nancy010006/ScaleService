@@ -49,6 +49,9 @@
             <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#contact">聯絡我們</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="{{url('')}}/site/scales">會員專區</a>
+            </li>
           </ul>
         </div>
       </div>
