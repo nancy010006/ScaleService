@@ -46,11 +46,12 @@
             border-top: 16px solid #3498db; /* Blue */
             border-bottom: 16px solid #3498db;
             border-radius: 50%;
-            width: 120px;
-            height: 120px;
+            width: 135px;
+            height: 135px;
             animation: spin 2s linear infinite;
             text-align: center;
             padding: 30px;
+            font-size: 5pt;
         }
 
         @keyframes spin {
@@ -60,7 +61,7 @@
         .worst{
             /*color: red;*/
             background-color: red;
-            font-weight: bold;  
+            font-weight: bold;
         }
     </style>
 @endsection
@@ -82,6 +83,7 @@
             fixTableHeader();
             setPopover();
             setMinVailtyColor();
+            $('.worst').focus();
         })
         function setPopover(){
             $(function () {
@@ -134,9 +136,9 @@
         function addBasic(){
             $('#halfReliablity').html(scale.analysis.halfReliablity);
             $('#alpha').html(scale.analysis.alpha);
-            $('#DiscriminantValidity').html(scale.analysis.DiscriminantValidity);
+            $('#DiscriminantValidity').html('<ul><li>違反次數 : '+scale.analysis.DiscriminantValidity.rejectTime+'</li><li>比較次數 : '+scale.analysis.DiscriminantValidity.compareTime+'</li></ul>');
             $.each(scale.analysis.MinVality,function(index,val){
-                $("#minValityArea").append('<li><strong>'+index+'</strong> : <span>'+val+'</span></li>');
+                $("#minValityArea").append('<li><strong>'+index+'</strong> : <span>'+val.value+'</span><p>'+val.q1+'</p><p>'+val.q2+'</p></li>');
             })
         }
         function setMinVailtyColor(){
@@ -144,7 +146,7 @@
             console.log(size);
             $.each(scale.analysis.MinVality,function(index,val){
                 $.each($('td[name="team'+size+'"]'),function(innerindex,innerval){
-                    if($(this).text()==val)
+                    if($(this).text()==val.value)
                         $(this).addClass('worst');
                 })
                 size--;
@@ -175,7 +177,7 @@
             $.each(scale.analysis.corr,function(index,val){
                 var count = 1;
                 $.each(val,function(innerindex,innerval){
-                    $("#thead tr").append('<th data-placement="top"  data-toggle="popover" title="題目敘述" data-trigger="hover" data-content="'+innerindex+'">'+index+(count++)+'</th>');
+                    $("#thead tr").append('<th data-placement="bottom"  data-toggle="popover" title="題目敘述" data-trigger="hover" data-content="'+innerindex+'">'+index+(count++)+'</th>');
                 })
                 interupt.push(count-1);
 
@@ -184,7 +186,7 @@
 
                     var size = Object.keys(innerval).length;
                     var stop = Object.keys(innerval).length-end;
-                    
+
                     // 相關係數全部秀出來
                     var td='';
                     var col = 1;
@@ -274,7 +276,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-3">
+                            <div class="col-lg-12">
                                 <div class="form-group">
                                     <label>收斂效度</label>
                                     <ul id="minValityArea">
