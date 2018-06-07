@@ -134,7 +134,8 @@
             return result;
         }
         function addBasic(){
-            $('#halfReliablity').html(scale.analysis.halfReliablity);
+            $('#halfReliablity').text(scale.analysis.halfReliablity);
+            $('#responseAmount').text(scale.analysis.responseAmount);
             $.each(scale.analysis.alpha,function(index,val){
                 $("#alpha").append('<li><strong>'+index+'</strong> : <span>'+val+'</span></li>');
             })
@@ -273,6 +274,13 @@
                                 <div class="form-group">
                                     <label>區別效度</label>
                                     <p id="DiscriminantValidity">
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <label>回應數量</label>
+                                    <p id="responseAmount">
                                     </p>
                                 </div>
                             </div>

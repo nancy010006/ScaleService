@@ -423,7 +423,7 @@ class ScaleController extends Controller {
 		}
 		$DiscriminantValidity["rejectTime"] = $rejectTime;
 		$DiscriminantValidity["compareTime"] = $compareTime;
-		return \Response::json(["halfReliablity" => $halfReliablity, "alpha" => $alpha, "DiscriminantValidity" => $DiscriminantValidity, "MinVality" => $MinVality, "corr" => $corr]);
+		return \Response::json(["halfReliablity" => $halfReliablity, "alpha" => $alpha, "DiscriminantValidity" => $DiscriminantValidity, "MinVality" => $MinVality, "responseAmount"=>$responses->count() ,"corr" => $corr]);
 		return 123;
 	}
 }
