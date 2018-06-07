@@ -8,6 +8,8 @@ use App\Question;
 use App\Scale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ScaleExport;
+use Carbon\Carbon;
 
 class ScaleController extends Controller {
 	public function index() {
@@ -424,6 +426,10 @@ class ScaleController extends Controller {
 		$DiscriminantValidity["rejectTime"] = $rejectTime;
 		$DiscriminantValidity["compareTime"] = $compareTime;
 		return \Response::json(["halfReliablity" => $halfReliablity, "alpha" => $alpha, "DiscriminantValidity" => $DiscriminantValidity, "MinVality" => $MinVality, "responseAmount"=>$responses->count() ,"corr" => $corr]);
-		return 123;
+	}
+	public function exportExcel(Scale $Scale) {
+		// return $Scale;
+		$time = Carbon::now()->toDateString();
+		return (new ScaleExport($Scale->id))->download($Scale->name."_".$time.".xlsx");
 	}
 }

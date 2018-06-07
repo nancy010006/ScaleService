@@ -69,3 +69,5 @@ Route::get('/site/record/{scale}', 'SiteController@record')->middleware('isUser'
 
 Route::get('/login', 'site\LoginController@showLoginForm')->name('login');
 Route::post('/register', 'Auth\RegisterController@register');
+
+

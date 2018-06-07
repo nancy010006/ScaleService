@@ -1,5 +1,11 @@
 <?php
 
+function pushSpaceInExcel($array,$times){
+    for ($i=0; $i <$times ; $i++) { 
+        array_push($array,"");
+    }
+    return $array;
+}
 function standard_deviation($aValues, $bSample = false)
 {
     $fMean = array_sum($aValues) / count($aValues);

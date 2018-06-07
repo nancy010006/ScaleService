@@ -83,7 +83,7 @@
             fixTableHeader();
             setPopover();
             setMinVailtyColor();
-            $('.worst').focus();
+            setExport();
         })
         function setPopover(){
             $(function () {
@@ -167,6 +167,11 @@
                 ordering: false,
                 info:     false,
                 searching:false
+            });
+        }
+        function setExport(){
+            $("#export").click(function(){
+                window.location.href='{{url("")}}/api/export/{{$scale->id}}';
             });
         }
         function addToTable(){
@@ -253,6 +258,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <label>分析資料</label>
+                        <button id="export" type="button" class="btn btn-success">匯出成Excel</button>
                     </div>
                     <div class="panel-body">
                         <div class="row">
