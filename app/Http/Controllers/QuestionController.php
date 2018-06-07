@@ -31,9 +31,53 @@ class QuestionController extends Controller
         }
     	return \Response::json(['status' => 'ok', 'msg' => '新增成功']);
     }
-    public function update(Request $request,Question $Question){
-        $input = $request->all();
-        $Question->update($input);
+    public function update(Request $request){
+        $data = $request->all();
+        unset($data["_token"]);
+        $scaleid = $data["scaleid"];
+        unset($data["scaleid"]);
+        // data為全部dimension資料
+        // 將data拆成old及new 比較 若old和new長度一樣則逐項替換 new>old表示有新增題目 new<old為刪除題目
+        foreach ($data as $key => $value) {
+            $dimensionName = $key;
+            //若old沒有資料會出錯 故此處理
+            if(array_key_exists("oldquestions",$value)){
+                $oldlength = count($value["oldquestions"]);
+                $oldquestions = $value["oldquestions"];
+            }else{
+                $oldlength = 0;
+                $oldquestions = array();
+            }
+            $newlength = count($value["newquestions"]);
+            $newquestions = $value["newquestions"];
+            // print_r($oldlength." ".$newlength."\n");
+            if($oldlength==$newlength){
+                foreach ($oldquestions as $index => $id) {
+                    if(empty($newquestions[$index]))
+                        Question::find($id)->delete();
+                    else   
+                        Question::find($id)->update(['description'=>$newquestions[$index]]);
+                }
+            }else if($oldlength<$newlength){
+                foreach ($oldquestions as $index => $id) {
+                    if(empty($newquestions[$index]))
+                        Question::find($id)->delete();
+                    else   
+                        Question::find($id)->update(['description'=>$newquestions[$index]]);
+                }
+                for ($i=$oldlength; $i <$newlength ; $i++) { 
+                    if(!empty($newquestions[$i])){
+                        Question::create([
+                            'description' => $newquestions[$i],
+                            'scaleid' => $scaleid,
+                            'dimension' => $key
+                        ]);
+                    }
+                }
+            }else{
+                return \Response::json(['status' => 'error', 'msg' => '發生異常，請聯絡管理人員']);
+            }
+        }
     	return \Response::json(['status' => 'ok', 'msg' => '修改成功']);
     }
     public function delete(Request $request,Question $Question){

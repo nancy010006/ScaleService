@@ -16,7 +16,7 @@ class CreateResponsesTable extends Migration
         Schema::create('responses', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-            $table->string("response");
+            $table->text("response");
             $table->unsignedInteger("userid");
             $table->foreign('userid')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedInteger("scaleid");
