@@ -135,7 +135,9 @@
         }
         function addBasic(){
             $('#halfReliablity').html(scale.analysis.halfReliablity);
-            $('#alpha').html(scale.analysis.alpha);
+            $.each(scale.analysis.alpha,function(index,val){
+                $("#alpha").append('<li><strong>'+index+'</strong> : <span>'+val+'</span></li>');
+            })
             $('#DiscriminantValidity').html('<ul><li>違反次數 : '+scale.analysis.DiscriminantValidity.rejectTime+'</li><li>比較次數 : '+scale.analysis.DiscriminantValidity.compareTime+'</li></ul>');
             $.each(scale.analysis.MinVality,function(index,val){
                 $("#minValityArea").append('<li><strong>'+index+'</strong> : <span>'+val.value+'</span><p>'+val.q1+'</p><p>'+val.q2+'</p></li>');
@@ -256,8 +258,8 @@
                             <div class="col-lg-3">
                                 <div class="form-group">
                                     <label>Cronbach &#945</label>
-                                    <p id="alpha">
-                                    </p>
+                                    <ul id="alpha">
+                                    </ul>
                                 </div>
                             </div>
                             <div class="col-lg-3">

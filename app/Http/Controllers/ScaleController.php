@@ -203,11 +203,13 @@ class ScaleController extends Controller {
 		$scaleid = $Scale->id;
 		//此問卷有哪些構面
 		$dimensions = DB::table('questions')->select('dimensions.name')->join('dimensions', 'dimensions.id', '=', 'questions.dimension')->where('dimensions.scaleid', $scaleid)->groupBy('dimensions.name')->get()->toarray();
-		//comparsion qid對到各構面
 		$questions = DB::table('scales')->select('questions.description as qname', 'questions.id as qid', 'dimensions.name as dname')->join('dimensions', 'scales.id', '=', 'dimensions.scaleid')->join('questions', 'questions.dimension', '=', 'dimensions.id')->where('scales.id', $scaleid)->orderBy('questions.id')->get()->toarray();
+		//comparsion qid對到各構面
 		$comparison = array();
+		$qidToDimensionArr = array();
 		foreach ($questions as $key => $value) {
 			$comparison[$value->qid] = $value->dname . "*" . $value->qname;
+			$qidToDimensionArr[$value->qid] = $value->dname;
 		}
 
 		//cronbach alpha 使用之變數宣告 待會使用折半信度內的tmp資料計算
@@ -292,7 +294,27 @@ class ScaleController extends Controller {
 		}
 		//折半信度結果
 		$halfReliablity = round(getcorr($odd, $even), 4);
-		//因為key值混亂 算不出cronbach alpha 重新設定key值
+
+		//組各構面alpha準備計算資料
+		$dimensionAlpha = array();
+		foreach ($dimensions as $key => $value) {
+			$dimensionAlpha[$value->name] = array();
+		}
+		foreach ($alphaarray as $key => $val) {
+			$tmp = array();
+			foreach ($dimensions as $key => $value) {
+				$tmp[$value->name] = array();
+			}
+			foreach ($val as $qid => $score) {
+				# code...
+				// print_r($qidToDimensionArr[$qid]);
+				array_push($tmp[$qidToDimensionArr[$qid]], $score);
+			}
+			foreach ($tmp as $key => $value) {
+				array_push($dimensionAlpha[$key], $value);
+			}
+		}
+		//整體alpha 因為key值混亂 算不出cronbach alpha 重新設定key值
 		foreach ($alphaarray as $key => $val) {
 			$new_key = 0;
 			ksort($alphaarray[$key]);
@@ -302,11 +324,20 @@ class ScaleController extends Controller {
 				unset($alphaarray[$key][$innerkey]);
 			}
 		}
-
-		//算cronbach alpha
+		$alpha = array();
+		//算各構面 alpha
+		// print_r($alphaarray);
+		// print_r($dimensionAlpha);
+		foreach ($dimensionAlpha as $key => $value) {
+			$ca = new CronbachAlpha();
+			$ca->LoadData($value);
+			// print_r(round($ca->CalculateCronbachAlpha(), 4));
+			$alpha[$key] = round($ca->CalculateCronbachAlpha(), 4);
+		}
 		$ca = new CronbachAlpha();
+		//算整體cronbach alpha
 		$ca->LoadData($alphaarray);
-		$alpha = round($ca->CalculateCronbachAlpha(), 4);
+		$alpha["整體"] = round($ca->CalculateCronbachAlpha(), 4);
 
 		//收斂效度回傳陣列宣告
 		$MinVality = array();
