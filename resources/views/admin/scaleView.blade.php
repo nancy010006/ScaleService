@@ -77,6 +77,7 @@
     <script type="text/javascript">
         var scale = {};
         $(document).ready(function(){
+            setLimitDate();
             initial();
             addBasic();
             addToTable();
@@ -123,9 +124,20 @@
         function getScaleAnalysis(){
             var result;
             var scaleid ={{$scale->id}};
+            const StartDate ='{{$StartDate}}';
+            const EndDate ='{{$EndDate}}';
+            let url;
+            if (StartDate&&EndDate){
+                $('#StartDate').val(StartDate);
+                $('#EndDate').val(EndDate);
+                url = '{{url("")}}/api/getAnalysis/'+scaleid+'/'+StartDate+'/'+EndDate;
+            }
+            else
+                url = '{{url("")}}/api/getAnalysis/'+scaleid;
+            console.log(url);
             $.ajax({
                 type:'get',
-                url:'{{url("")}}/api/getAnalysis/'+scaleid,
+                url:url,
                 async:false,
                 success:function(r){
                     result = r;
@@ -170,8 +182,31 @@
             });
         }
         function setExport(){
+            const StartDate ='{{$StartDate}}';
+            const EndDate ='{{$EndDate}}';
+            let url;
+            if (StartDate&&EndDate)
+                url = '{{url("")}}/api/export/{{$scale->id}}/'+StartDate+'/'+EndDate;
+            else
+                url = '{{url("")}}/api/export/{{$scale->id}}';
             $("#export").click(function(){
-                window.location.href='{{url("")}}/api/export/{{$scale->id}}';
+                window.location.href=url;
+            });
+        }
+        function setLimitDate(){
+            $("#LimitDate").click(function(){
+                const StartDate = $('#StartDate').val();
+                const EndDate = $('#EndDate').val();
+
+                if(StartDate&&EndDate){
+                    var scaleid ={{$scale->id}};
+                    window.location.href='{{url("")}}/admin/scale/view/{{$scale->id}}/'+StartDate+'/'+EndDate;
+                }else{
+                    alert('請選定兩個時間區間再做限定');
+                }
+            });
+            $("#cancelLimitDate").click(function(){
+                window.location.href='{{url("")}}/admin/scale/view/{{$scale->id}}';
             });
         }
         function addToTable(){
@@ -259,6 +294,20 @@
                     <div class="panel-heading">
                         <label>分析資料</label>
                         <button id="export" type="button" class="btn btn-success">匯出成Excel</button>
+
+                        {{-- 起始時間到結束時間 --}}
+                        <div class="form-group row">
+                          <div class="col-xs-2">
+                            <label for="ex1">開始時間</label>
+                            <input class="form-control" id="StartDate" type="date">
+                          </div>
+                          <div class="col-xs-2">
+                            <label for="ex2">結束時間</label>
+                            <input class="form-control" id="EndDate" type="date">
+                          </div>
+                        </div>
+                        <button id="LimitDate" type="button" class="btn btn-warning">限定時間</button>
+                        <button id="cancelLimitDate" type="button" class="btn btn-danger">取消限定時間</button>
                     </div>
                     <div class="panel-body">
                         <div class="row">

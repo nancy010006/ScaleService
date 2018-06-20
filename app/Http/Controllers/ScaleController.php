@@ -200,7 +200,7 @@ class ScaleController extends Controller {
 		$scale->delete();
 		return \Response::json(['status' => 'ok', 'msg' => '刪除成功']);
 	}
-	public function getAnalysis(Request $request, Scale $Scale) {
+	public function getAnalysis(Request $request, Scale $Scale, $StartDate = null ,$EndDate  = null) {
 		//取資料庫資料
 		$scaleid = $Scale->id;
 		//此問卷有哪些構面
@@ -222,7 +222,13 @@ class ScaleController extends Controller {
 		foreach ($comparison as $key => $value) {
 			$data['question'][$value] = array();
 		}
-		$responses = DB::table('responses')->select('response')->where('scaleid', $scaleid)->get();
+		if($StartDate&&$EndDate){
+			$from = date($StartDate);
+			$to = date($EndDate);
+			$responses = DB::table('responses')->select('response')->where('scaleid', $scaleid)->whereBetween('created_at', [$from, $to])->get();
+		}
+		else
+			$responses = DB::table('responses')->select('response')->where('scaleid', $scaleid)->get();
 		foreach ($responses as $key => $value) {
 			$tmp = jsonResponseTransfer($value->response);
 			foreach ($tmp as $tkey => $tvalue) {
@@ -427,9 +433,17 @@ class ScaleController extends Controller {
 		$DiscriminantValidity["compareTime"] = $compareTime;
 		return \Response::json(["halfReliablity" => $halfReliablity, "alpha" => $alpha, "DiscriminantValidity" => $DiscriminantValidity, "MinVality" => $MinVality, "responseAmount"=>$responses->count() ,"corr" => $corr]);
 	}
-	public function exportExcel(Scale $Scale) {
+	public function exportExcel(Scale $Scale, $StartDate = null ,$EndDate  = null) {
 		// return $Scale;
-		$time = Carbon::now()->toDateString();
-		return (new ScaleExport($Scale->id))->download($Scale->name."_".$time.".xlsx");
+		$time = Carbon::now()->format('ymd');
+		if($StartDate&&$EndDate){
+			$StartDate=date_create($StartDate);
+			$StartDate = date_format($StartDate,"ymd");
+			$EndDate=date_create($EndDate);
+			$EndDate = date_format($EndDate,"ymd");
+			return (new ScaleExport($Scale->id,$StartDate,$EndDate))->download($Scale->name.$StartDate."_".$EndDate.".xlsx");
+		}
+		else
+			return (new ScaleExport($Scale->id,$StartDate,$EndDate))->download($Scale->name."(".$time.").xlsx");
 	}
 }

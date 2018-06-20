@@ -25,7 +25,7 @@ class AdminController extends Controller
     public function scaleEdit(Scale $scale){
         return view('admin.scaleEdit',["scale"=>$scale]);
     }
-    public function scaleView(Scale $scale){
-        return view('admin.scaleView',["scale"=>$scale]);
+    public function scaleView(Scale $scale,$StartDate=null,$EndDate=null){
+        return view('admin.scaleView',["scale"=>$scale,"StartDate"=>$StartDate,"EndDate"=>$EndDate]);
     }
 }

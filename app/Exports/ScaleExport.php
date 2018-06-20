@@ -10,10 +10,14 @@ class ScaleExport implements WithMultipleSheets
     use Exportable;
 
     protected $ScaleID;
+    protected $StartDate;
+    protected $EndDate;
 
-    public function __construct(int $ScaleID)
+    public function __construct(int $ScaleID,String $StartDate = null,String $EndDate = null)
     {
         $this->ScaleID = $ScaleID;
+        $this->StartDate = $StartDate;
+        $this->EndDate = $EndDate;
     }
 
     /**
@@ -23,9 +27,9 @@ class ScaleExport implements WithMultipleSheets
     {
         $sheets = [];
 
-        $sheets[0] = new ScaleBasicData($this->ScaleID);
-        $sheets[1] = new ScaleCorr($this->ScaleID);
-        $sheets[2] = new ScaleCompareTable($this->ScaleID);
+        $sheets[0] = new ScaleBasicData($this->ScaleID,$this->StartDate,$this->EndDate);
+        $sheets[1] = new ScaleCorr($this->ScaleID,$this->StartDate,$this->EndDate);
+        $sheets[2] = new ScaleCompareTable($this->ScaleID,$this->StartDate,$this->EndDate);
 
         return $sheets;
     }

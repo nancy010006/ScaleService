@@ -16,9 +16,11 @@ use collection;
 class ScaleCompareTable implements WithTitle,FromCollection,ShouldAutoSize
 {
     private $ScaleID;
+    private $StartDate;
+    private $EndDate;
     private $data;
 
-    public function __construct(int $ScaleID)
+    public function __construct(int $ScaleID,String $StartDate = null,String $EndDate = null)
     {
         $this->ScaleID  = $ScaleID;
         $scaleid = $ScaleID;
@@ -38,7 +40,16 @@ class ScaleCompareTable implements WithTitle,FromCollection,ShouldAutoSize
         foreach ($comparison as $key => $value) {
             $data['question'][$value] = array();
         }
-        $responses = DB::table('responses')->select('response')->where('scaleid', $scaleid)->get();
+
+        // 限定時間
+        if($StartDate&&$EndDate){
+            $from = date($StartDate);
+            $to = date($EndDate);
+            $responses = DB::table('responses')->select('response')->where('scaleid', $scaleid)->whereBetween('created_at', [$from, $to])->get();
+        }
+        else
+            $responses = DB::table('responses')->select('response')->where('scaleid', $scaleid)->get();
+
         foreach ($responses as $key => $value) {
             $tmp = jsonResponseTransfer($value->response);
             foreach ($tmp as $tkey => $tvalue) {

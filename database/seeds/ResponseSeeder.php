@@ -11,6 +11,6 @@ class ResponseSeeder extends Seeder
      */
     public function run()
     {
-        factory(App\Response::class, 300)->create();
+        factory(App\Response::class, 5000)->create();
     }
 }

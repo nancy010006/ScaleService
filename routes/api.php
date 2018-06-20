@@ -21,4 +21,6 @@ Route::get('/historyResponses', 'ResponseController@getSomeOneHistoryResponses')
 Route::get('/historyResponse/{Scale}', 'ResponseController@getSomeOneHistoryResponse')->middleware('auth:api');
 Route::get('/getstd/{Scale}', 'ResponseController@getstd');
 Route::get('/getAnalysis/{Scale}', 'ScaleController@getAnalysis');
+Route::get('/getAnalysis/{Scale}/{StartDate}/{EndDate}', 'ScaleController@getAnalysis');
+Route::get('/export/{Scale}/{StartDate}/{EndDate}', 'ScaleController@exportExcel');
 Route::get('/export/{Scale}', 'ScaleController@exportExcel');
