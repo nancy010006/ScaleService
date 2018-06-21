@@ -213,7 +213,7 @@
             var compare = [];
             console.log(scale.analysis.corr);
             var count = 1;
-            var interupt = [];
+            var interupt = [0];
             var colcount =1;
             var row = 1;
             var end =1;
@@ -222,6 +222,8 @@
                 $.each(val,function(innerindex,innerval){
                     $("#thead tr").append('<th data-placement="bottom"  data-toggle="popover" title="題目敘述" data-trigger="hover" data-content="'+innerindex+'">'+index+(count++)+'</th>');
                 })
+                let tdstart = eval(interupt.join('+'));
+                console.log(tdstart);
                 interupt.push(count-1);
 
                 var count = 1;
@@ -236,10 +238,21 @@
                     $.each(innerval,function(innerindex2,innerval2){
                         if(stop>=size)
                             return
+                        // 秀三角形
+                        // if(col<=tdstart){
+                        //     td+='<td id="'+col+','+row+'"></td>';
+                        // }else{
+                        //     if(innerval2!=1)
+                        //         td+='<td id="'+col+','+row+'">'+innerval2+'</td>';
+                        //     else
+                        //         td+='<td id="'+col+','+row+'" class="same">'+innerval2+'</td>';
+                        // }
+                        // 全秀出來
                         if(innerval2!=1)
                             td+='<td id="'+col+','+row+'">'+innerval2+'</td>';
                         else
                             td+='<td id="'+col+','+row+'" class="same">'+innerval2+'</td>';
+                        // 
                         col++;
                         stop++;
                     })

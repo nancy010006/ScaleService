@@ -389,6 +389,8 @@ class ScaleController extends Controller {
 			//因資料格式設計 q2為其中一題的索引 需再找出題目敘述
 			$q1 = "";
 			$q2 = 0;
+			// $dimcountArr;
+			// print_r($dimcountArr);
 			foreach ($corr as $innerdim => $question) {
 				foreach ($question as $key => $everycorr) {
 					if (($limit) > $max) {

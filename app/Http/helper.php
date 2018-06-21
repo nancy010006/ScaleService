@@ -81,6 +81,9 @@ function getcorr($X,$Y){
     $xstd=sqrt(($x_square_sum-pow($xsum,2)/$count)/($count-1));
     $ystd=sqrt(($y_square_sum-pow($ysum,2)/$count)/($count-1));
     $xystd=$xstd*$ystd; //兩標準差乘積
+    if($xystd==0){
+        return 0;
+    }
     //計算樣本共變異數
     $covar=$mdcross_sum/($count-1);
     // print_r($covar);

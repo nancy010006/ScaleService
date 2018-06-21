@@ -76,7 +76,7 @@
                         <li>
                             <a href="{{url('')}}/admin/scale"><i class="fa fa-edit fa-fw"></i>量表管理</a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> 開發中</a>
                         </li>
                         <li>
@@ -162,7 +162,7 @@
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
