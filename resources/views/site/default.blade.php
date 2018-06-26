@@ -8,7 +8,8 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>SB Admin - Start Bootstrap Template</title>
+  <title>ScaleService</title>
+  <link rel="shortcut icon" href="{{url('')}}/favicon.ico" type="image/x-icon" />
   <!-- Bootstrap core CSS-->
   <link href="{{url('')}}/vendor2/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->
@@ -41,12 +42,12 @@
             <span class="nav-link-text">歷程記錄</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="狀況分析(表格)">
+        {{-- <li class="nav-item" data-toggle="tooltip" data-placement="right" title="狀況分析(表格)">
           <a class="nav-link" href="tables.html">
             <i class="fa fa-fw fa-table"></i>
             <span class="nav-link-text">狀況分析(表格)</span>
           </a>
-        </li>
+        </li> --}}
         {{-- <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Components">
           <a class="nav-link nav-link-collapse collapsed" data-toggle="collapse" href="#collapseComponents" data-parent="#exampleAccordion">
             <i class="fa fa-fw fa-wrench"></i>

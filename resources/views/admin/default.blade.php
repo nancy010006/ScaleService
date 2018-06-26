@@ -11,6 +11,7 @@
 
     <title>量表管理系統</title>
 
+    <link rel="shortcut icon" href="{{url('')}}/favicon.ico" type="image/x-icon" />
     <!-- Bootstrap Core CSS -->
     <link href="{{url('')}}/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 

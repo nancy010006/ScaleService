@@ -4,9 +4,9 @@
       <!-- Breadcrumbs-->
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="#">Dashboard</a>
+          {{-- <a href="#">Dashboard</a> --}}
         </li>
-        <li class="breadcrumb-item active">Tables</li>
+        <li class="breadcrumb-item active">歷程記錄</li>
       </ol>
       <span class="highest descr">偏高</span>
   	  <span class="lowest descr">偏低</span>

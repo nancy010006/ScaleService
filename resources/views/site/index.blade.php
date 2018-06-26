@@ -10,6 +10,7 @@
 
     <title>ScaleService</title>
 
+    <link rel="shortcut icon" href="{{url('')}}/favicon.ico" type="image/x-icon" />
     <!-- Bootstrap core CSS -->
     <link href="{{url('')}}/sitevendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 

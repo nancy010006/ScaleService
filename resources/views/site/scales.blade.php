@@ -4,7 +4,7 @@
   <!-- Breadcrumbs-->
   <ol class="breadcrumb">
     <li class="breadcrumb-item">
-      <a href="#">主選單</a>
+      {{-- <a href="#">主選單</a> --}}
     </li>
     <li class="breadcrumb-item active">所有量表</li>
   </ol>

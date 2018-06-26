@@ -4,7 +4,7 @@
   <!-- Breadcrumbs-->
   <ol class="breadcrumb">
     <li class="breadcrumb-item">
-      <a href="#">主選單</a>
+      {{-- <a href="#">主選單</a> --}}
     </li>
     <li class="breadcrumb-item active">歷程記錄</li>
   </ol>
