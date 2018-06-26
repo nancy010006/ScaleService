@@ -134,12 +134,13 @@
             }
             else
                 url = '{{url("")}}/api/getAnalysis/'+scaleid;
-            console.log(url);
             $.ajax({
                 type:'get',
                 url:url,
                 async:false,
                 success:function(r){
+                    if(r.status!=200)
+                        alert("無資料");
                     result = r;
                 }
             })

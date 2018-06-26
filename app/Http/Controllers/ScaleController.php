@@ -204,8 +204,21 @@ class ScaleController extends Controller {
 		//取資料庫資料
 		$scaleid = $Scale->id;
 		//此問卷有哪些構面
-		$dimensions = DB::table('questions')->select('dimensions.name')->join('dimensions', 'dimensions.id', '=', 'questions.dimension')->where('dimensions.scaleid', $scaleid)->groupBy('dimensions.name')->get()->toarray();
-		$questions = DB::table('scales')->select('questions.description as qname', 'questions.id as qid', 'dimensions.name as dname')->join('dimensions', 'scales.id', '=', 'dimensions.scaleid')->join('questions', 'questions.dimension', '=', 'dimensions.id')->where('scales.id', $scaleid)->orderBy('questions.id')->get()->toarray();
+		$dimensions = DB::table('questions')
+			->select('dimensions.name')
+			->join('dimensions', 'dimensions.id', '=', 'questions.dimension')
+			->where('dimensions.scaleid', $scaleid)
+			->groupBy('dimensions.name')
+			->get()
+			->toarray();
+		$questions = DB::table('scales')
+			->select('questions.description as qname', 'questions.id as qid', 'dimensions.name as dname')
+			->join('dimensions', 'scales.id', '=', 'dimensions.scaleid')
+			->join('questions', 'questions.dimension', '=', 'dimensions.id')
+			->where('scales.id', $scaleid)
+			->orderBy('questions.id')
+			->get()
+			->toarray();
 		//comparsion qid對到各構面
 		$comparison = array();
 		$qidToDimensionArr = array();
@@ -229,6 +242,9 @@ class ScaleController extends Controller {
 		}
 		else
 			$responses = DB::table('responses')->select('response')->where('scaleid', $scaleid)->get();
+		if($responses->count()==0){
+			return \Response::json(["status" => 500]);
+		}
 		foreach ($responses as $key => $value) {
 			$tmp = jsonResponseTransfer($value->response);
 			foreach ($tmp as $tkey => $tvalue) {
@@ -433,7 +449,7 @@ class ScaleController extends Controller {
 		}
 		$DiscriminantValidity["rejectTime"] = $rejectTime;
 		$DiscriminantValidity["compareTime"] = $compareTime;
-		return \Response::json(["halfReliablity" => $halfReliablity, "alpha" => $alpha, "DiscriminantValidity" => $DiscriminantValidity, "MinVality" => $MinVality, "responseAmount"=>$responses->count() ,"corr" => $corr]);
+		return \Response::json(["status"=> 200 ,"halfReliablity" => $halfReliablity, "alpha" => $alpha, "DiscriminantValidity" => $DiscriminantValidity, "MinVality" => $MinVality, "responseAmount"=>$responses->count() ,"corr" => $corr]);
 	}
 	public function exportExcel(Scale $Scale, $StartDate = null ,$EndDate  = null) {
 		// return $Scale;
