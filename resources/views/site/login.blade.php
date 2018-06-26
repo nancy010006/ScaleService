@@ -8,6 +8,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <title>SB Admin - Start Bootstrap Template</title>
+  <link rel="shortcut icon" href="{{url('')}}/favicon.ico" type="image/x-icon" />
   <!-- Bootstrap core CSS-->
   <link href="{{url('')}}/vendor2/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <!-- Custom fonts for this template-->

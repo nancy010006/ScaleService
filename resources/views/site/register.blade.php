@@ -74,11 +74,29 @@
               <label>地區</label>
                 <select name="area" class="form-control" required="">
                     <option value="{{old('area')}}">{{old('area')}}</option>
-                    <option value="北部">北部</option>
-                    <option value="中部">中部</option>
-                    <option value="南部">南部</option>
-                    <option value="東部">東部</option>
-                    <option value="離島">離島</option>
+                    <option value="臺北市">臺北市</option>
+                    <option value="新北市">新北市</option>
+                    <option value="桃園市">桃園市</option>
+                    <option value="臺中市">臺中市</option>
+                    <option value="臺南市">臺南市</option>
+                    <option value="高雄市">高雄市</option>
+                    <option value="基隆市">基隆市</option>
+                    <option value="新竹市">新竹市</option>
+                    <option value="嘉義市">嘉義市</option>
+                    <option value="新竹縣">新竹縣</option>
+                    <option value="苗栗縣">苗栗縣</option>
+                    <option value="彰化縣">彰化縣</option>
+                    <option value="南投縣">南投縣</option>
+                    <option value="雲林縣">雲林縣</option>
+                    <option value="嘉義縣">嘉義縣</option>
+                    <option value="屏東縣">屏東縣</option>
+                    <option value="宜蘭縣">宜蘭縣</option>
+                    <option value="花蓮縣">花蓮縣</option>
+                    <option value="臺東縣">臺東縣</option>
+                    <option value="澎湖縣">澎湖縣</option>
+                    <option value="金門縣">金門縣</option>
+                    <option value="連江縣">連江縣</option>
+                    <option value="其他">其他</option>
                 </select>
               </div>
             </div>
@@ -99,11 +117,29 @@
               <label>職業</label>
                 <select name="job" class="form-control" required="">
                     <option value="{{old('job')}}">{{old('job')}}</option>
-                    <option value="工">工</option>
-                    <option value="商">商</option>
-                    <option value="農">農</option>
-                    <option value="東部">東部</option>
-                    <option value="離島">離島</option>
+                    <option value="農牧業">農牧業</option>
+                    <option value="漁業">漁業</option>
+                    <option value="木材、森林業">木材、森林業</option>
+                    <option value="礦業、採石業">礦業、採石業</option>
+                    <option value="交通運輸業">交通運輸業</option>
+                    <option value="餐旅業">餐旅業</option>
+                    <option value="建築工程業">建築工程業</option>
+                    <option value="製造業">製造業</option>
+                    <option value="新聞、出版、廣告業">新聞、出版、廣告業</option>
+                    <option value="娛樂業">娛樂業</option>
+                    <option value="文教">文教</option>
+                    <option value="宗教">宗教</option>
+                    <option value="公共事業">公共事業</option>
+                    <option value="商業">商業</option>
+                    <option value="金融業">金融業</option>
+                    <option value="服務業">服務業</option>
+                    <option value="家庭管理">家庭管理</option>
+                    <option value="治安人員">治安人員</option>
+                    <option value="軍人">軍人</option>
+                    <option value="體育">體育</option>
+                    <option value="資訊">資訊</option>
+                    <option value="學生">學生</option>
+                    <option value="其它">其它</option>
                 </select>
               </div>
 
