@@ -41,7 +41,10 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'auth' =>0])) {
-            return redirect('/site/scales');
+            if($request->url)
+                return redirect($request->url);
+            else
+                return redirect('/site/scales');
         }else{
             return view('/site/login')->withErrors(array(
             'msg' => '帳號或密碼錯誤'

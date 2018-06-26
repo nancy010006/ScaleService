@@ -23,7 +23,6 @@
     }
   </style>
 </head>
-
 <body class="bg-dark">
   <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
     <div class="container">
@@ -60,6 +59,7 @@
               </span>
           @endif
           </div>
+          <input type="hidden" name="url" value="{{ session('url') }}">
           <button class="btn btn-primary btn-block" type="submit">登入</button>
         </form>
         <div class="text-center">

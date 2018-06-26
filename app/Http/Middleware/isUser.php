@@ -17,10 +17,10 @@ class isUser
     public function handle($request, Closure $next)
     {
         if (!Auth::check()) {
-            return redirect('/site/login');
+            return redirect('/site/login')->with('url',url()->current());
         }
         if(Auth::User()->auth!=0){
-            return redirect('/site/login');
+            return redirect('/site/login')->with('url',url()->current());
         }
         return $next($request);
     }
