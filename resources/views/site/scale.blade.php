@@ -20,9 +20,11 @@
 			$('#divide'+pd).append('<div class="alert alert-warning"><ul class="list-group"><strong>'+val.name+'</strong></ul></div>');
 			$.each(val.questions,function(qindex,qval){
 				$('#divide'+pd).append('<br><li class="list-group-item"><p>'+(Qnum++)+'.'+qval.description+'</p></li>');
+				$('#divide'+pd).append("非常不滿意");
 				for (var i = 1; i <= ScaleData.level; i++) {
 					$('#divide'+pd).append(i+'<input type="radio"  name="'+ScaleData.dimensions[index].name+(qindex)+'"id="'+ScaleData.dimensions[index].name+i+'"'+'value="'+i+'">');
 				}
+				$('#divide'+pd).append("非常滿意");
 			})
 			pd++;
 		})
