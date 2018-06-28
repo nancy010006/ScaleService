@@ -27,6 +27,7 @@ $factory->define(App\Response::class, function (Faker $faker) {
         'response' =>$response,
         'scaleid' =>$scaleid,
         'userid' =>$userid,
-        'created_at' => $faker->date('Y-m-d','now'),
+        // 'created_at' => $faker->date('Y-m-d',$min = 'now'),
+        'created_at' => $faker->dateTimeBetween($startDate = '-2 years', $endDate = 'now', $timezone = null),
     ];
 });
