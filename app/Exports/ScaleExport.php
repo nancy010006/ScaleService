@@ -30,6 +30,7 @@ class ScaleExport implements WithMultipleSheets
         $sheets[0] = new ScaleBasicData($this->ScaleID,$this->StartDate,$this->EndDate);
         $sheets[1] = new ScaleCorr($this->ScaleID,$this->StartDate,$this->EndDate);
         $sheets[2] = new ScaleCompareTable($this->ScaleID,$this->StartDate,$this->EndDate);
+        $sheets[3] = new OriginData($this->ScaleID,$this->StartDate,$this->EndDate);
 
         return $sheets;
     }
