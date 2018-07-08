@@ -93,12 +93,9 @@
 		}
 		return 1;
 	}
-<<<<<<< HEAD
 	// function test(){
 	// 	$('input').attr('checked',true);
 	// }
-=======
->>>>>>> origin/dev
 	function submit(){
 		var count = 0;
 		var returnObj={"response":[]};
