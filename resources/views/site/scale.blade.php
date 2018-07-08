@@ -19,12 +19,12 @@
 			$('#page_divide').append('<div id="divide'+pd+'" name="'+pd+'"></div>');
 			$('#divide'+pd).append('<div class="alert alert-warning"><ul class="list-group"><strong>'+val.name+'</strong></ul></div>');
 			$.each(val.questions,function(qindex,qval){
-				$('#divide'+pd).append('<br><li class="list-group-item"><p>'+(Qnum++)+'.'+qval.description+'</p></li>');
-				$('#divide'+pd).append("非常不滿意");
+				$('#divide'+pd).append('<br><li class=" list-group-item"><p>'+(Qnum++)+'.'+qval.description+'</p></li>');
+				$('#divide'+pd).append('<span style="zoom:1.5" class="badge badge-danger">非常不滿意</span>');
 				for (var i = 1; i <= ScaleData.level; i++) {
-					$('#divide'+pd).append(i+'<input type="radio"  name="'+ScaleData.dimensions[index].name+(qindex)+'"id="'+ScaleData.dimensions[index].name+i+'"'+'value="'+i+'">');
+					$('#divide'+pd).append('<span class="badge badge-light">'+i+'<input type="radio" style="zoom:1.5" name="'+ScaleData.dimensions[index].name+(qindex)+'"id="'+ScaleData.dimensions[index].name+i+'"'+'value="'+i+'"></span>&nbsp;&nbsp;');
 				}
-				$('#divide'+pd).append("非常滿意");
+				$('#divide'+pd).append('<span style="zoom:1.5" class="badge badge-primary">非常滿意</span>');
 			})
 			pd++;
 		})
@@ -93,9 +93,9 @@
 		}
 		return 1;
 	}
-	function test(){
-		$('input').attr('checked',true);
-	}
+	// function test(){
+	// 	$('input').attr('checked',true);
+	// }
 	function submit(){
 		var count = 0;
 		var returnObj={"response":[]};
