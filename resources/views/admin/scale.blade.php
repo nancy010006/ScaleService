@@ -13,7 +13,6 @@
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="{{url('')}}/vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
     <script src="{{url('')}}/vendor/datatables-responsive/dataTables.responsive.js"></script>
-    <script src="{{url('')}}/vendor/clipboard/clipboard.min.js"></script>
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script type="text/javascript">
         $("#add").click(function(){
@@ -21,7 +20,6 @@
         })
         $(document).ready(function(){
             getData();
-            new ClipboardJS('.btn');
         })
         function getData(){
             $.ajax({
@@ -30,9 +28,7 @@
                 success:function(r){
                     var i=1;
                     $.each(r,function(key,value){
-                        const url = '<input id="url'+value.id+'" value="{{url('')}}/site/scales/'+value.id+'"> ';
-                        const copyButton = '<button class="btn btn-info" data-clipboard-target="#url'+value.id+'">複製</button>';
-                        $("#tbody").append("<tr><td>"+i+"</td><td>"+value.name+"</td><td>"+value.level+"</td><td>"+value.created_at+"</td><td><button onclick='viewScale("+value.id+")' type='button' class='btn btn-success btn-circle'><i class='fa fa-search'></i></button> <button onclick='editScale("+value.id+")' type='button' class='btn btn-primary btn-circle'><i class='fa fa-pencil'></i></button> <button onclick='deleteScale("+value.id+")' type='button' class='btn btn-danger btn-circle'><i class='fa fa-times'></i></button></td><td>"+url+copyButton+"</td></tr>");
+                        $("#tbody").append("<tr><td>"+i+"</td><td>"+value.name+"</td><td>"+value.level+"</td><td>"+value.created_at+"</td><td><button onclick='viewScale("+value.id+")' type='button' class='btn btn-success btn-circle'><i class='fa fa-search'></i></button> <button onclick='editScale("+value.id+")' type='button' class='btn btn-primary btn-circle'><i class='fa fa-pencil'></i></button> <button onclick='deleteScale("+value.id+")' type='button' class='btn btn-danger btn-circle'><i class='fa fa-times'></i></button></td></tr>");
                         i++;
                     })
                 }
@@ -88,7 +84,6 @@
                                             <th>量表名稱</th>
                                             <th>等第</th>
                                             <th>建立日期</th>
-                                            <th></th>
                                             <th></th>
                                         </tr>
                                     </thead>
