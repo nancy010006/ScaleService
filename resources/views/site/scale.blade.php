@@ -93,9 +93,6 @@
 		}
 		return 1;
 	}
-	function test(){
-		$('input').attr('checked',true);
-	}
 	function submit(){
 		var count = 0;
 		var returnObj={"response":[]};
