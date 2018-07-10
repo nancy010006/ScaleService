@@ -19,7 +19,7 @@ class AdminController extends Controller
     public function scale(){
         return view('admin.scale');
     }
-    public function scaleadd(){
+    public function scaleAdd(){
         return view('admin.scaleAdd');
     }
     public function scaleEdit(Scale $scale){
